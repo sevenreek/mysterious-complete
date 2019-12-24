@@ -12,7 +12,7 @@ class IDisplayController(TickListener):
         raise NotImplementedError
     def setDisplayMode(self, mode):
         raise NotImplementedError
-    def onTick(self, seconds):
+    def onTick(self, seconds, timeLeft):
         self.setSeconds(seconds)
 class AF_HT16K33_7Seg(IDisplayController):
     MODE_MMSS = 0
