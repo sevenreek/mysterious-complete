@@ -7,6 +7,7 @@ def test_01():
     i2c = busio.I2C(board.SCL, board.SDA)
     dsp = AF_HT16K33_7Seg(i2c)
     tmr.appendTickListener(dsp)
+    tmr.setStart(3600)
     while(True):
         tmr.onUpdate()
 
