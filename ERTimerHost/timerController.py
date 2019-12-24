@@ -8,6 +8,9 @@ class TickListener():
 class StartListener():
     def onStart(self, secLeft):
         raise NotImplementedError
+class HitZeroListener():
+    def onHitZero(self):
+        raise NotImplementedError
 class ITimer():
     def setStart(self, withValue = 0):
         raise NotImplementedError
@@ -24,6 +27,8 @@ class ITimer():
     def appendStartListener(self, listener):
         raise NotImplementedError
     def onTick(self):
+        raise NotImplementedError
+    def onHitZero(self):
         raise NotImplementedError
 class UnthreadedTimer(ITimer, UpdateListener):
     def __init__(self):
@@ -60,3 +65,7 @@ class UnthreadedTimer(ITimer, UpdateListener):
     def onTick(self):
         for listener in self.tickListeners:
             listener.onTick(self.secondsRemaining, self.countingDown)
+        if(self.secondsRemaining == 0):
+            self.onHitZero()
+    def onHitZero(self):
+        self.pause()

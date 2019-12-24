@@ -26,11 +26,14 @@ class AF_HT16K33_7Seg(IDisplayController):
         pass
     def setSeconds(self, totalSeconds):
         if(self.mode == AF_HT16K33_7Seg.MODE_MMSS):
-            minutes = totalSeconds // 60
-            seconds = totalSeconds - minutes * 60
-            stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
-            print('\r'+stringToDisplay,end='')
-            self.display.print(stringToDisplay)
+            if(totalSeconds > 0):
+                minutes = totalSeconds // 60
+                seconds = totalSeconds - minutes * 60
+                stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
+                print('\r'+stringToDisplay,end='')
+                self.display.print(stringToDisplay)
+            else:
+                self.display.print('00:00')
     def setDisplayMode(self, mode):
         self.mode = mode
 
