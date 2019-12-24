@@ -31,12 +31,14 @@ class UnthreadedTimer(ITimer, UpdateListener):
         self.setStartListeners = []
         self.secondsRemaining = 0
         self.countingDown = False
-        self.lastResume = 0
+        self.lastTick = 0
     def onUpdate(self):
         if(self.countingDown):
-            if(time.time()-self.lastResume>=1):
-                self.secondsRemaining = ( self.secondsRemaining - int(time.time()-self.lastResume) )
+            tickVal = time.time()
+            if( ( tickVal-self.lastTick ) >= 1 ):
+                self.secondsRemaining = ( self.secondsRemaining - int(tickVal-self.lastTick) )
                 self.onTick()
+                self.lastTick = tickVal
     def setStart(self, withValue = 0):
         self.secondsRemaining = withValue
         self.resume()
@@ -45,7 +47,7 @@ class UnthreadedTimer(ITimer, UpdateListener):
     def pause(self):
         self.countingDown = False
     def resume(self):
-        self.lastResume = time.time()
+        self.lastTick = time.time()
         self.countingDown = True
     def setSeconds(self, value):
         self.secondsRemaining = value
