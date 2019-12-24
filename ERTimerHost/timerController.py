@@ -33,9 +33,10 @@ class UnthreadedTimer(ITimer, UpdateListener):
         self.countingDown = False
         self.lastResume = 0
     def onUpdate(self):
-        if(time.time()-self.lastResume>=1):
-            self.secondsRemaining = ( self.secondsRemaining - int(time.time()-self.lastResume) )
-            self.onTick()
+        if(self.countingDown):
+            if(time.time()-self.lastResume>=1):
+                self.secondsRemaining = ( self.secondsRemaining - int(time.time()-self.lastResume) )
+                self.onTick()
     def setStart(self, withValue = 0):
         self.secondsRemaining = withValue
         self.resume()
