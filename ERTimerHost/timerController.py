@@ -23,7 +23,7 @@ class ITimer():
         raise NotImplementedError
     def appendStartListener(self, listener):
         raise NotImplementedError
-    def onTick(self, secondsRemaining):
+    def onTick(self):
         raise NotImplementedError
 class UnthreadedTimer(ITimer, UpdateListener):
     def __init__(self):
