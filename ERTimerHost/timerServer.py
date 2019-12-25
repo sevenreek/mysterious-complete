@@ -1,5 +1,5 @@
 from bottle import Bottle, route, run, template
-
+import threading
 class TimerServer():
     def __init__(self, timerInterface, host, port):
         self._timerSocket = timerInterface
@@ -16,3 +16,5 @@ class TimerServer():
         return '{0}\n{1}'.format(totalSeconds, timerRunning)
     def start(self):
         self._bottleApp.run(host=self._host, port=self._port)
+    def startThreaded(self):
+        threading.Thread(target=self.start)

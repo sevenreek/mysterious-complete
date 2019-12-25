@@ -19,7 +19,7 @@ def test_timerHTTP():
     tmr.appendTickListener(dsp)
     tmr.setStart(3600)
     server = TimerServer(tmr,'localhost',8080)
-    server.start()
+    server.startThreaded()
     while(True):
         tmr.onUpdate()
 
