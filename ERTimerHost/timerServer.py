@@ -26,6 +26,7 @@ class TimerServer():
         self._bottleApp.route('/timer/resume', method="GET", callback=self._resume)
         self._bottleApp.route('/timer/set', method="GET", callback=self._set)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
+        self._bottleApp.route('/forcebroadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
     def _status(self):
         timerState = self._timerSocket.getStatus()

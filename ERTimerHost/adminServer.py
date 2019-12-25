@@ -19,6 +19,7 @@ class DeviceDetectorServer():
         self._bottleApp.route('/devices/list', method="GET", callback=self._list)
         self._bottleApp.route('/devices/detect', method="GET", callback=self.startThreadedDetect)
         self._bottleApp.route('/devices/halt', method="GET", callback=self.haltDetect)
+        self._bottleApp.route('/admin/hello', method="GET", callback=self._hello)
     def detectBroadcastContinous(self):
         self._threadAlive = True
         self._detectBroadcasts = True
@@ -29,8 +30,9 @@ class DeviceDetectorServer():
             splitMsg = message.split('\n') # change this when moved to JSONs
             if(len(splitMsg) == UDP_MESSAGE_LINE_COUNT and splitMsg[0] in ROOMDEVICES.MODELS):
                 if(deviceIP in self._unlinkedDevicesIPs):
-                    pass
+                    print('broadcast from detected device')
                 else:
+                    print('found new device')
                     self._unlinkedDevicesIPs.append(deviceIP)
         self._threadAlive = False
     def startCommunicationServer(self):
@@ -45,6 +47,8 @@ class DeviceDetectorServer():
         for ip in self._unlinkedDevicesIPs: # append all unlinked ips to string
             response = response + ip + '\n'
         return response[:-1] # strip last \n
+    def _hello(self):
+        return 'detector operating'
 if __name__ == "__main__":
     unlinkedIPs = []
     server = DeviceDetectorServer(unlinkedIPs, 'localhost', 8080, 4000)
