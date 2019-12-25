@@ -57,6 +57,8 @@ class TimerServer():
         broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIP), 'utf-8'), ('255.255.255.255', 4000) )
         broadcastSocket.close()
     def _who(self):
+        if(self._deviceIP == '127.0.0.1' or self._deviceIP == '127.0.1.1'):
+            return 'ip auto-detect failed'
         self.broadcastSelf()
         return 'broadcasting'
     def startThreaded(self):
