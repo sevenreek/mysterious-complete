@@ -17,4 +17,4 @@ class TimerServer():
     def start(self):
         self._bottleApp.run(host=self._host, port=self._port)
     def startThreaded(self):
-        threading.Thread(target=self.start)
+        threading.Thread(target=self.start).start()
