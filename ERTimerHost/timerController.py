@@ -2,6 +2,9 @@ import time
 class UpdateListener():
     def onUpdate(self):
         raise NotImplementedError
+class TimerSubscriberSocket():
+    def getStatus(self):
+        raise NotImplementedError
 class TickListener():
     def onTick(self, secLeft, countingDown):
         raise NotImplementedError
@@ -11,7 +14,7 @@ class StartListener():
 class HitZeroListener():
     def onHitZero(self):
         raise NotImplementedError
-class ITimer():
+class ITimer(TimerSubscriberSocket):
     def setStart(self, withValue = 0):
         raise NotImplementedError
     def pause(self):
@@ -56,6 +59,8 @@ class UnthreadedTimer(ITimer, UpdateListener):
         self.countingDown = True
     def setSeconds(self, value):
         self.secondsRemaining = value
+    def getStatus(self):
+        return (self.secondsRemaining, self.countingDown)
     def addSeconds(self, value):
         self.secondsRemaining = self.secondsRemaining + value
     def appendTickListener(self, listener):
