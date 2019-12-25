@@ -11,7 +11,7 @@ class TimerServer():
         self._bottleApp.route('/timer/status', method="GET", callback=self._status)
         self._bottleApp.route('/timer/pause', method="GET", callback=self._pause)
         self._bottleApp.route('/timer/resume', method="GET", callback=self._resume)
-        self._bottleApp.route('/timer/set', method="POST", callback=self._set)
+        self._bottleApp.route('/timer/set', method="GET", callback=self._set)
     def _status(self):
         timerState = self._timerSocket.getStatus()
         totalSeconds = timerState[0]
@@ -23,7 +23,7 @@ class TimerServer():
         self._timerSocket.resume()
     def _set(self):
         try:
-            seconds = int(request.forms.get('totalseconds'))
+            seconds = int(request.query.get('totalseconds'))
             self._timerSocket.setSeconds(seconds)
         except ValueError:
             pass
