@@ -8,7 +8,7 @@ class TimerServer():
         self._port = port
         self._roomID = roomID
         self._deviceName = socket.gethostname()
-        self._deviceIP = socket.gethostbyname(self._deviceName)[-1]
+        self._deviceIP = socket.gethostbyname_ex(self._deviceName)[-1]
         self._bottleApp = Bottle()
         self._route()
     def _route(self):
