@@ -8,7 +8,7 @@ class TimerServer():
         self._port = port
         self._roomID = roomID
         self._deviceName = socket.gethostname()
-        self._deviceIPs = socket.gethostbyname_ex(self._deviceName)[2]
+        self._deviceIP = socket.gethostbyname(socket.getfqdn())
         self._bottleApp = Bottle()
         self._route()
     def _route(self):
@@ -47,7 +47,7 @@ class TimerServer():
     def broadcastSelf(self):
         broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIPs[0]), 'utf-8'), ('255.255.255.255', 4000) )
+        broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIP), 'utf-8'), ('255.255.255.255', 4000) )
     def _who(self):
         self.broadcastSelf()
         return 'broadcasting'
