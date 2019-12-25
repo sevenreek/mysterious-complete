@@ -18,7 +18,7 @@ def test_timerHTTP():
     dsp = AF_HT16K33_7Seg(i2c)
     tmr.appendTickListener(dsp)
     tmr.setStart(3600)
-    server = TimerServer(tmr,'localhost',8080)
+    server = TimerServer(tmr,'0.0.0.0',8080)
     server.startThreaded()
     while(True):
         tmr.onUpdate()
