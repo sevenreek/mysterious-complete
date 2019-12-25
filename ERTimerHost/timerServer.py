@@ -47,7 +47,7 @@ class TimerServer():
     def broadcastSelf(self):
         broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIPs[0]) + '\n' + str(self._deviceIPs[1]), 'utf-8'), ('255.255.255.255', 4000) )
+        broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIPs[0]), 'utf-8'), ('255.255.255.255', 4000) )
     def _who(self):
         self.broadcastSelf()
         return 'broadcasting'
