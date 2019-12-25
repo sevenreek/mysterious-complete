@@ -1,11 +1,13 @@
 from bottle import Bottle, route, run, template, request
+from roomdevices import ROOMDEVICES
 import threading
 import socket
 class TimerServer():
-    def __init__(self, timerInterface, roomID, host, port):
+    def __init__(self, timerInterface, roomID, host, port, broadcastPort):
         self._timerSocket = timerInterface
         self._host = host
         self._port = port
+        self._broadcastPort = broadcastPort
         self._roomID = roomID
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
@@ -24,7 +26,7 @@ class TimerServer():
         self._bottleApp.route('/timer/resume', method="GET", callback=self._resume)
         self._bottleApp.route('/timer/set', method="GET", callback=self._set)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
-        self._bottleApp.route('/server/who', method="GET", callback=self._who)
+        self._bottleApp.route('/who', method="GET", callback=self._who)
     def _status(self):
         timerState = self._timerSocket.getStatus()
         totalSeconds = timerState[0]
@@ -54,12 +56,19 @@ class TimerServer():
     def broadcastSelf(self):
         broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        broadcastSocket.sendto( bytes('rpi:room,timer\n' + str(self._roomID) + '\n' + str(self._deviceIP), 'utf-8'), ('255.255.255.255', 4000) )
+        byteSequence =  bytes(
+            '{0}\n{1}\n{2}'.format(
+                ROOMDEVICES.MODEL_RPI,
+                (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
+                self._roomID
+        ), 'utf-8') # this should become a JSON eventually
+        broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
         broadcastSocket.close()
     def _who(self):
-        if(self._deviceIP == '127.0.0.1' or self._deviceIP == '127.0.1.1'):
-            return 'ip auto-detect failed'
-        self.broadcastSelf()
-        return 'broadcasting'
+        return '{0}\n{1}\n{2}'.format( 
+            ROOMDEVICES.MODEL_RPI,
+            (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
+            self._roomID
+        ) # this should become a JSON eventually
     def startThreaded(self):
         threading.Thread(target=self.start).start()
