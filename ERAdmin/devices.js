@@ -7,16 +7,17 @@ $(function(){
   function loadLatestResults(){
 
     $.ajax({
-      url : 'http://192.168.0.145:8080/timer/status',
+      url : 'localhost:8080/devices/list',
       cache : false,
-      dataType : "json",
+      crossDomain : true,
+      dataType : "text",
       success : function(data){
-        $('#dev1-primary').html(data);
+        console.log("success")
+        $('#devices_foundcount').html(data);
       },
       error: function (error) {
         console.log("error:" + error);
       }
     });
   }
-
 });

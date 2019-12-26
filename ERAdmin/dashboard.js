@@ -7,13 +7,12 @@ $(function(){
   function loadLatestResults(){
 
     $.ajax({
-      url : 'localhost:8080/devices/list',
+      url : 'http://192.168.0.145:8080/timer/status',
       cache : false,
+      dataType : "json",
       crossDomain : true,
-      dataType : "text",
       success : function(data){
-        console.log("success")
-        $('#devices_foundcount').html(data);
+        $('#dev1-primary').html(data);
       },
       error: function (error) {
         console.log("error:" + error);
