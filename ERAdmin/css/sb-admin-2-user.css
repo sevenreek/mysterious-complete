@@ -1,0 +1,7 @@
+.card-clickable {
+    transition: all .2s ease-in-out;
+}
+.card-clickable:hover {
+    transform: scale(1.05);
+    text-decoration: none;
+}
