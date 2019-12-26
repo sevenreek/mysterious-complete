@@ -1,7 +1,8 @@
-from bottle import Bottle, route, run, template, request
+from bottle import Bottle, route, run, template, request, response
 from roomdevices import ROOMDEVICES
 import threading
 import socket
+import json
 class TimerServer():
     def __init__(self, timerInterface, roomID, host, port, broadcastPort):
         self._timerSocket = timerInterface
@@ -28,6 +29,7 @@ class TimerServer():
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/forcebroadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
+        self._bottleApp.add_hook('after_request', func=self._enable_cors)
     def _status(self):
         timerState = self._timerSocket.getStatus()
         totalSeconds = timerState[0]
@@ -57,19 +59,35 @@ class TimerServer():
     def broadcastSelf(self):
         broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        byteSequence =  bytes(
-            '{0}\n{1}\n{2}'.format(
-                ROOMDEVICES.MODEL_RPI,
-                (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
-                self._roomID
-        ), 'utf-8') # this should become a JSON eventually
-        broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
-        broadcastSocket.close()
-    def _who(self):
-        return '{0}\n{1}\n{2}'.format( 
+        jsonFile = json.dumps(
+            ( 
             ROOMDEVICES.MODEL_RPI,
             (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
             self._roomID
+            )
+        )
+        byteSequence = bytes(jsonFile, 'utf-8') 
+        # this should become a JSON eventually
+        #byteSequence =  bytes(
+        #    '{0}\n{1}\n{2}'.format(
+        #        ROOMDEVICES.MODEL_RPI,
+        #        (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
+        #        self._roomID
+        #), 'utf-8') # this should become a JSON eventually
+        broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
+        broadcastSocket.close()
+        return 'forced broadcast'
+    def _who(self):
+        return json.dumps(
+            ( 
+            ROOMDEVICES.MODEL_RPI,
+            (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
+            self._roomID
+            )
         ) # this should become a JSON eventually
+    def _enable_cors(self):
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
     def startThreaded(self):
         threading.Thread(target=self.start).start()
