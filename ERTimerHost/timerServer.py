@@ -34,7 +34,7 @@ class TimerServer():
         timerState = self._timerSocket.getStatus()
         totalSeconds = timerState[0]
         timerRunning = timerState[1]
-        return '{0}<br/>{1}'.format(totalSeconds, timerRunning)
+        return json.dumps((totalSeconds, timerRunning))
     def _pause(self):
         self._timerSocket.pause()
         return self._status() + '<br/>PAUSED'

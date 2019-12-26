@@ -14,8 +14,8 @@ $(function(){
       success : function(data){
         $('#dev1-primary').html(data);
       },
-      error: function (error) {
-        console.log("error:" + error);
+      error: function (xhr, status, error) {
+        console.log("error:" + xhr.responseText);
       }
     });
   }
