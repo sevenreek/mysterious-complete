@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin 2 - Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Orbitron&display=swap" rel="stylesheet">
+
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="css/sb-admin-2-user.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="index.html">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link" href="devices.html">
+          <i class="fas fa-fw fa-network-wired"></i>
+          <span>Devices</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Configuration</span>
+        </a>
+      </li>
+
+     
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          Escape Room Control System Mockup
+
+         
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-redo-alt fa-sm text-white-50"></i> Refresh</a>
+          </div>
+
+          <!-- Content Row -->
+          <div class="row" id="connected-devices-list">
+
+            
+            <div class="col-12 mb-2">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev0-name">RUNNING ROOM</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev0-primary">21:38</div>
+                      <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev0-times">16:45-17:45</div>
+                    </div>
+                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev0-btn-resume" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-play"></i>
+                          </span>
+                          <span class="text">Wznów</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev0-btn-pause">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-pause"></i>
+                          </span>
+                          <span class="text">Pauza</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev0-btn-stop">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-stop"></i>
+                          </span>
+                          <span class="text">Koniec</span>
+                        </button>
+                      </div>
+                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev0-btn-reset" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-redo "></i>
+                          </span>
+                          <span class="text">Reset</span>
+                        </button>
+                      </div>
+                      <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">
+                        <a href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev0-btn-add">
+                          <span class="icon text-white-50 ">
+                            <i class="fas fa-plus"></i>
+                          </span>
+                          <span class="text">Dodaj Czas</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-2">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev0-name">READY ROOM</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev0-primary">60:00</div>
+                      <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev0-times">##:##-##:##</div>
+                    </div>
+                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev0-btn-resume">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-play"></i>
+                          </span>
+                          <span class="text">Rozpocznij</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev0-btn-pause" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-pause"></i>
+                          </span>
+                          <span class="text">Pauza</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev0-btn-stop" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-stop"></i>
+                          </span>
+                          <span class="text">Koniec</span>
+                        </button>
+                      </div>
+                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev0-btn-reset">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-redo "></i>
+                          </span>
+                          <span class="text">Reset</span>
+                        </button>
+                      </div>
+                      <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">
+                        <button href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev0-btn-add">
+                          <span class="icon text-white-50 ">
+                            <i class="fas fa-plus"></i>
+                          </span>
+                          <span class="text">Dodaj Czas</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-2">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev0-name">PAUSED ROOM</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev0-primary">21:38</div>
+                      <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev0-times">16:45-17:45</div>
+                    </div>
+                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev0-btn-resume">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-play"></i>
+                          </span>
+                          <span class="text">Wznów</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev0-btn-pause" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-pause"></i>
+                          </span>
+                          <span class="text">Pauza</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev0-btn-stop">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-stop"></i>
+                          </span>
+                          <span class="text">Koniec</span>
+                        </button>
+                      </div>
+                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev0-btn-reset" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-redo "></i>
+                          </span>
+                          <span class="text">Reset</span>
+                        </button>
+                      </div>
+                      <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">
+                        <a href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev0-btn-add">
+                          <span class="icon text-white-50 ">
+                            <i class="fas fa-plus"></i>
+                          </span>
+                          <span class="text">Dodaj Czas</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-2">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev0-name">FINISHED ROOM</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev0-primary">00:38</div>
+                      <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev0-times">16:45-17:45</div>
+                    </div>
+                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev0-btn-resume">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-play"></i>
+                          </span>
+                          <span class="text">Wznów</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev0-btn-pause" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-pause"></i>
+                          </span>
+                          <span class="text">Pauza</span>
+                        </button>
+                      </div>
+                      <div class="bd-highlight">
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev0-btn-stop" disabled>
+                          <span class="icon text-white-50">
+                            <i class="fas fa-stop"></i>
+                          </span>
+                          <span class="text">Koniec</span>
+                        </button>
+                      </div>
+                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev0-btn-reset">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-redo "></i>
+                          </span>
+                          <span class="text">Reset</span>
+                        </button>
+                      </div>
+                      <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">
+                        <button href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev0-btn-add">
+                          <span class="icon text-white-50 ">
+                            <i class="fas fa-plus"></i>
+                          </span>
+                          <span class="text">Dodaj Czas</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Room Overview Card
+            <div class="col-xl-3 col-md-6 mb-4">
+              <a href="?focusDevice=1" class="card-clickable card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev1-name"></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev1-primary">##:##</div>
+                    </div>
+                    <div class="col-auto" id="dev1-ico">
+                      <i  class="fas fa-stopwatch fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div> -->
+            <!-- Room Overview Card 
+            <div class="col-xl-3 col-md-6 mb-4">
+              <a href="?focusDevice=2" class="card-clickable card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev2-name"></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev2-primary">##:##</div>
+                    </div>
+                    <div class="col-auto" id="dev2-ico">
+                      
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>-->
+            <!-- Room Overview Card 
+            <div class="col-xl-3 col-md-6 mb-4">
+              <a href="?focusDevice=3" class="card-clickable card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev3-name"></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev3-primary">##:##</div>
+                    </div>
+                    <div class="col-auto" id="dev3-ico">
+                      
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>-->
+           
+          </div>
+          <!-- Content Row -->
+
+         
+
+          
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+     
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+
+
+  
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+  <script src="dashboard.js"></script>
+
+
+</body>
+
+</html>
