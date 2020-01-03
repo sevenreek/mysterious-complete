@@ -8,35 +8,21 @@ class TimerSubscriberSocket():
 class TickListener():
     def onTick(self, secLeft, countingDown):
         raise NotImplementedError
-class StartListener():
-    def onStart(self, secLeft):
+class TimerEvent():
+    EVENT_NONE = 0
+    EVENT_RESUME = 1
+    EVENT_PAUSE = 2
+    EVENT_HITZERO = 3
+    def __init__(self, etype, data):
+        self.type = etype
+        self.data = data
+class TimerEventListener():
+    def onEvent(self, event):
         raise NotImplementedError
-class HitZeroListener():
-    def onHitZero(self):
-        raise NotImplementedError
-class ITimer(TimerSubscriberSocket):
-    def setStart(self, withValue = 0):
-        raise NotImplementedError
-    def pause(self):
-        raise NotImplementedError
-    def resume(self):
-        raise NotImplementedError
-    def setSeconds(self, value):
-        raise NotImplementedError
-    def addSeconds(self, value):
-        raise NotImplementedError
-    def appendTickListener(self, listener):
-        raise NotImplementedError
-    def appendStartListener(self, listener):
-        raise NotImplementedError
-    def onTick(self):
-        raise NotImplementedError
-    def onHitZero(self):
-        raise NotImplementedError
-class UnthreadedTimer(ITimer, UpdateListener):
+class UnthreadedTimer(UpdateListener):
     def __init__(self):
         self.tickListeners = []
-        self.setStartListeners = []
+        self.eventListeners = []
         self.secondsRemaining = 0
         self.countingDown = False
         self.lastTick = 0
@@ -50,13 +36,13 @@ class UnthreadedTimer(ITimer, UpdateListener):
     def setStart(self, withValue = 0):
         self.secondsRemaining = withValue
         self.resume()
-        for listener in self.setStartListeners:
-            listener.onStart(self.secondsRemaining)
     def pause(self):
         self.countingDown = False
+        self.raiseEvent(TimerEvent(TimerEvent.EVENT_PAUSE,self.secondsRemaining))
     def resume(self):
         self.lastTick = time.time()
         self.countingDown = True
+        self.raiseEvent(TimerEvent(TimerEvent.EVENT_RESUME,self.secondsRemaining))
     def setSeconds(self, value):
         self.secondsRemaining = value
     def getStatus(self):
@@ -65,12 +51,14 @@ class UnthreadedTimer(ITimer, UpdateListener):
         self.secondsRemaining = self.secondsRemaining + value
     def appendTickListener(self, listener):
         self.tickListeners.append(listener)
-    def appendStartListener(self, listener):
-        self.setStartListeners.append(listener)
+    def appendEventListener(self, listener):
+        self.eventListeners.append(listener)
+    def raiseEvent(self, event):
+        for listener in self.eventListeners:
+            listener.onEvent(event)
     def onTick(self):
         for listener in self.tickListeners:
             listener.onTick(self.secondsRemaining, self.countingDown)
         if(self.secondsRemaining == 0):
-            self.onHitZero()
-    def onHitZero(self):
-        self.pause()
+            self.pause()
+            self.raiseEvent(TimerEvent(TimerEvent.EVENT_HITZERO,None))

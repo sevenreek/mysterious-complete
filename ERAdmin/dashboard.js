@@ -44,56 +44,7 @@ $(function(){
           dataType : "json",
           crossDomain : true,
           success : function(statusData){
-            //console.log(statusData);
-            var totalSeconds = parseInt(statusData[0]);
-            var timerRunning = statusData[1];
-            var deviceState = statusData[2];
-            var minutes = ~~(totalSeconds / 60); // werid js integer division
-            var seconds = totalSeconds - minutes*60;
-            var countingDown = statusData[1];
-            $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
-            switch(deviceState) {
-              case TIMER_STATES.READY:
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
-                $("#dev" + deviceIndex + '-card').addClass('border-left-info');
-                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-play-text').html("Rozpocznij grę");
-              break;
-              case TIMER_STATES.STARTED:
-              case TIMER_STATES.RESUMED:
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
-                $("#dev" + deviceIndex + '-card').addClass('border-left-success');
-                $("#dev" + deviceIndex + '-btn-play').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
-              break;
-              case TIMER_STATES.PAUSED:
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
-                $("#dev" + deviceIndex + '-card').addClass('border-left-warning');
-                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
-              break;
-              case TIMER_STATES.STOPPED_END:
-              case TIMER_STATES.STOPPED_WIN:
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
-                $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
-                $("#dev" + deviceIndex + '-card').addClass('border-left-danger');
-                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
-                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
-                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
-              break;
-              default:
-              break;
-            }
+            updateRoomState(deviceIndex,statusData);
           },
           error: function (xhr, status, error) {
             console.log("error:" + xhr.responseText);
@@ -161,7 +112,7 @@ $( document ).ready(function() {
                         </button>\
                       </div>\
                       <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">\
-                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">\
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev'+deviceIndexInDevicesArray+'-btn-reset-val" value="60">\
                         <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset" disabled>\
                           <span class="icon text-white-50">\
                             <i class="fas fa-redo "></i>\
@@ -170,7 +121,7 @@ $( document ).ready(function() {
                         </button>\
                       </div>\
                       <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">\
-                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">\
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev'+deviceIndexInDevicesArray+'-btn-add-val" value="5">\
                         <a href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-add">\
                           <span class="icon text-white-50 ">\
                             <i class="fas fa-plus"></i>\
@@ -188,7 +139,14 @@ $( document ).ready(function() {
           $('#dev"+deviceIndexInDevicesArray+"-btn-play').click({device: "+deviceIndexInDevicesArray+", command: '/timer/play'}, sendCommand);\
           $('#dev"+deviceIndexInDevicesArray+"-btn-pause').click({device: "+deviceIndexInDevicesArray+", command: '/timer/pause'}, sendCommand);\
           $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click({device: "+deviceIndexInDevicesArray+", command: '/timer/stop'}, sendCommand);\
-          $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click({device: "+deviceIndexInDevicesArray+", command: '/timer/reset?'}, sendCommand);\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-reset').click(function() {\
+            var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-reset-val').val());\
+            sendCommandString(deviceIndexInDevicesArray,'/timer/reset?totalseconds='+secs);\
+          });\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-add').click(function() {\
+            var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-add-val').val());\
+            sendCommandString(deviceIndexInDevicesArray,'/timer/add?totalseconds='+secs);\
+          });\
           <\/script>");
         }, // end success
         error: function (xhr, status, error) {
@@ -199,13 +157,74 @@ $( document ).ready(function() {
   } // end devices for loop
   
 });
-
-function sendCommand(event)
+function sendCommandString(devindex, str)
 {
   $.ajax({
-    url : 'http://' + devices[event.data.device][3] + ':' + devicesPort + event.data.command,
+    url : 'http://' + devices[devindex][3] + ':' + devicesPort + str,
     cache : false,
     dataType : "json",
-    crossDomain : true
+    crossDomain : true/*,
+    success : function(statusData){
+      updateRoomState(deviceIndex,statusData);
+    }*/
   });
+}
+function sendCommand(event)
+{
+  sendCommandString(event.data.device,event.data.command);
+}
+function updateRoomState(deviceIndex, statusData)
+{
+  var totalSeconds = parseInt(statusData[0]);
+  var timerRunning = statusData[1];
+  var deviceState = statusData[2];
+  var minutes = ~~(totalSeconds / 60); // werid js integer division
+  var seconds = totalSeconds - minutes*60;
+  var countingDown = statusData[1];
+  $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
+  switch(deviceState) {
+    case TIMER_STATES.READY:
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+      $("#dev" + deviceIndex + '-card').addClass('border-left-info');
+      $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-reset').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-play-text').html("Rozpocznij grę");
+    break;
+    case TIMER_STATES.STARTED:
+    case TIMER_STATES.RESUMED:
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+      $("#dev" + deviceIndex + '-card').addClass('border-left-success');
+      $("#dev" + deviceIndex + '-btn-play').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-pause').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-reset').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+    break;
+    case TIMER_STATES.PAUSED:
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
+      $("#dev" + deviceIndex + '-card').addClass('border-left-warning');
+      $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+    break;
+    case TIMER_STATES.STOPPED_END:
+    case TIMER_STATES.STOPPED_WIN:
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+      $("#dev" + deviceIndex + '-card').addClass('border-left-danger');
+      $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
+      $("#dev" + deviceIndex + '-btn-reset').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+    break;
+    default:
+    break;
+  }
 }

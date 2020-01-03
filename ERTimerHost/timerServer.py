@@ -73,6 +73,7 @@ class TimerServer():
             seconds = int(request.query.get('totalseconds'))
             self._timerSocket.setSeconds(seconds)
         except (ValueError, TypeError) as e:
+            print(e)
             return self._status() 
         return self._status()
     def _add(self):
@@ -81,6 +82,7 @@ class TimerServer():
             self._timerSocket.addSeconds(seconds)
             return self._status()
         except (ValueError, TypeError) as e:
+            print(e)
             return self._status()
     def _reset(self):
         try:
@@ -91,6 +93,7 @@ class TimerServer():
             self.notifyStateChangeListeners(self._state)
             return self._status()
         except (ValueError, TypeError) as e:
+            print(e)
             return self._status()
     def startServer(self):
         self._bottleApp.run(host=self._host, port=self._port)
