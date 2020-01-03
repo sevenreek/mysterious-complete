@@ -62,6 +62,6 @@ class UnthreadedTimer(UpdateListener):
     def onTick(self):
         for listener in self.tickListeners:
             listener.onTick(self.secondsRemaining, self.countingDown)
-        if(self.secondsRemaining == 0):
+        if(self.secondsRemaining == 0 and self.countingDown):
             self.pause()
             self.raiseEvent(TimerEvent(TimerEvent.EVENT_HITZERO,None))
