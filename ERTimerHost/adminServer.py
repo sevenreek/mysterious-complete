@@ -22,7 +22,7 @@ class DeviceDetectorServer():
         self._bottleApp.route('/devices/detect', method="GET", callback=self.startThreadedDetect)
         self._bottleApp.route('/devices/halt', method="GET", callback=self.haltDetect)
         self._bottleApp.route('/admin/hello', method="GET", callback=self._hello)
-        self._bottleApp.route('/admin', method="GET", callback=self._index)
+        self._bottleApp.route('/admin', method="GET", callback=self._dashboard)
         self._bottleApp.route('/<filepath:path>', callback=self._server_static)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
     def detectBroadcastContinous(self):
@@ -60,6 +60,8 @@ class DeviceDetectorServer():
         return 'detector operating'
     def _index(self):
         return self._server_static('index.html')
+    def _dashboard(self):
+        return self._server_static('dashobard.html')
     def _server_static(self, filepath):
         directory = os.path.join(os.path.dirname(__file__), '..', 'ERAdmin')
         return static_file(filepath, directory)
