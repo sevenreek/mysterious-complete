@@ -1,9 +1,17 @@
 function pad3(num, size){ return ('000' + num).substr(-size); }
-var deviceIPs = ["192.168.0.145", "192.168.0.177"]; // probably load from cookies
+//var deviceIPs = ["192.168.0.145", "192.168.0.177"]; // probably load from cookies
+var deviceIPs = ["192.168.0.145"]; // probably load from cookies
 var devicesPort = 8080;
+const TIMER_STATES = {
+  NULL        : 0,
+  READY       : 1,
+  STARTED     : 2,
+  RESUMED     : 3,
+  PAUSED      : 4,
+  STOPPED_END : 5,
+  STOPPED_WIN : 6
+}
 var devices = [];
-var focusedDevice = null;
-var linkedDeviceCount = 0;
 var getUrlParameter = function getUrlParameter(sParam) {
   var sPageURL = window.location.search.substring(1),
       sURLVariables = sPageURL.split('&'),
@@ -19,30 +27,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
   }
   return null;
 };
-function fillFocusedDevice()
-{
-  focusedDevice = getUrlParameter('focusDevice');
-  if(focusedDevice == null)
-  {
-    $('#focused-device-card').addClass('invisible');
-  }
-  else
-  {
-    $('#device'+focusedDevice).removeClass('border-left-primary');
-    $('#device'+focusedDevice).addClass('border-left-success');
-    $('#focused-device-card').removeClass('invisible');
-    $('#focused-device-name').html(devices[parseInt(focusedDevice)][2]);
-  }
-}
 $(function(){
 
   window.setInterval(function(){
-    loadLatestResults();
+    getRoomsState();
   }, 1000);
 
-  function loadLatestResults(){
+  function getRoomsState(){
    
-    for (deviceIndex = 0; deviceIndex < deviceIPs.length; deviceIndex++) // add all deviceIPs
+    for (deviceIndex = 0; deviceIndex < devices.length; deviceIndex++) // add all deviceIPs
     {
       (function(deviceIndex) {
         $.ajax({
@@ -53,17 +46,53 @@ $(function(){
           success : function(statusData){
             //console.log(statusData);
             var totalSeconds = parseInt(statusData[0]);
+            var timerRunning = statusData[1];
+            var deviceState = statusData[2];
             var minutes = ~~(totalSeconds / 60); // werid js integer division
             var seconds = totalSeconds - minutes*60;
             var countingDown = statusData[1];
             $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
-            if(countingDown)
-              $('#dev' + deviceIndex + '-ico').removeClass("invisible");
-            else
-              $('#dev' + deviceIndex + '-ico').addClass("invisible");
-            if(focusedDevice != null && focusedDevice == deviceIndex)
-            {
-              $('#focused-device-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
+            switch(deviceState) {
+              case TIMER_STATES.READY:
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+                $("#dev" + deviceIndex + '-card').addClass('border-left-info');
+                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-play-text').html("Rozpocznij grę");
+              break;
+              case TIMER_STATES.STARTED:
+              case TIMER_STATES.RESUMED:
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+                $("#dev" + deviceIndex + '-card').addClass('border-left-success');
+                $("#dev" + deviceIndex + '-btn-play').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+              break;
+              case TIMER_STATES.PAUSED:
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
+                $("#dev" + deviceIndex + '-card').addClass('border-left-warning');
+                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+              break;
+              case TIMER_STATES.STOPPED_END:
+              case TIMER_STATES.STOPPED_WIN:
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
+                $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+                $("#dev" + deviceIndex + '-card').addClass('border-left-danger');
+                $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+                $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
+                $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
+              break;
+              default:
+              break;
             }
           },
           error: function (xhr, status, error) {
@@ -95,64 +124,81 @@ $( document ).ready(function() {
           var model = statusData[0];
           var tags = statusData[1];
           var deviceID = statusData[2];
-          deviceIndexInDevicesArray = devices.length-1;
+          deviceIndexInDevicesArray = devices.length-1; // if the device exists load it into the devices array and add a card for it
           $('#connected-devices-list').append('\
-            <div class="col-xl-3 col-md-6 mb-4">\
-              <a href="?focusDevice=' + deviceIndexInDevicesArray + '" class="card-clickable card border-left-primary shadow h-100 py-2" id="device'+deviceIndexInDevicesArray+'">\
+            <div class="col-12 mb-2">\
+              <div class="card border-left-success shadow h-100 py-2" id="dev'+deviceIndexInDevicesArray+'-card">\
                 <div class="card-body">\
                   <div class="row no-gutters align-items-center">\
-                    <div class="col mr-2">\
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev' + deviceIndexInDevicesArray + '-name"></div>\
-                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev' + deviceIndexInDevicesArray + '-primary">##:##</div>\
+                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">\
+                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceID+'('+model+')'+'</div>\
+                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">21:38</div>\
+                      <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-times">##:##-##:##</div>\
                     </div>\
-                    <div class="col-auto invisible" id="dev' + deviceIndexInDevicesArray + '-ico">\
-                      <i class="fas fa-stopwatch fa-2x text-gray-300"></i>\
+                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">\
+                      <div class="bd-highlight">\
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev'+deviceIndexInDevicesArray+'-btn-play" disabled>\
+                          <span class="icon text-white-50">\
+                            <i class="fas fa-play"></i>\
+                          </span>\
+                          <span class="text" id="dev'+deviceIndexInDevicesArray+'-btn-play-text">Wznów</span>\
+                        </button>\
+                      </div>\
+                      <div class="bd-highlight">\
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev'+deviceIndexInDevicesArray+'-btn-pause">\
+                          <span class="icon text-white-50">\
+                            <i class="fas fa-pause"></i>\
+                          </span>\
+                          <span class="text">Pauza</span>\
+                        </button>\
+                      </div>\
+                      <div class="bd-highlight">\
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev'+deviceIndexInDevicesArray+'-btn-stop">\
+                          <span class="icon text-white-50">\
+                            <i class="fas fa-stop"></i>\
+                          </span>\
+                          <span class="text">Zakończ grę</span>\
+                        </button>\
+                      </div>\
+                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">\
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="60">\
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset" disabled>\
+                          <span class="icon text-white-50">\
+                            <i class="fas fa-redo "></i>\
+                          </span>\
+                          <span class="text">Reset pokoju</span>\
+                        </button>\
+                      </div>\
+                      <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">\
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value" value="5">\
+                        <a href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-add">\
+                          <span class="icon text-white-50 ">\
+                            <i class="fas fa-plus"></i>\
+                          </span>\
+                          <span class="text">Dodaj Czas</span>\
+                        </a>\
+                      </div>\
                     </div>\
                   </div>\
                 </div>\
-              </a>\
+              </div>\
             </div>\
-          ')
-          $('#dev'+deviceIndexInDevicesArray+'-name').html(deviceID + " (" + model + ")");
-          linkedDeviceCount++;
-          if(linkedDeviceCount == deviceIPs.length)
-            fillFocusedDevice();
-        },
+          ') // end device html card
+          $('#dev'+deviceIndexInDevicesArray+'-name').html(deviceID + " (" + model + ")"); // 
+        }, // end success
         error: function (xhr, status, error) {
           console.log("error:" + xhr.responseText);
-        }
-      });
+        } // end error
+      }); // end ajax anonymous function
     })(deviceIndex);
-  }
+  } // end devices for loop
   
 });
-$('#fd-btn-resume').click({command: 'resume'}, focusedDeviceTimerControl);
-$('#fd-btn-add5').click({command: 'add?totalseconds=300'}, focusedDeviceTimerControl);
-$('#fd-btn-pause').click({command: 'pause'}, focusedDeviceTimerControl);
-$('#fd-btn-set').click(focusedDeviceTimerSet);
-function focusedDeviceTimerControl(event)
+
+function sendCommand(event)
 {
   $.ajax({
-    url : 'http://' + devices[focusedDevice][3] + ':' + devicesPort + '/timer/' + event.data.command,
-    cache : false,
-    dataType : "json",
-    crossDomain : true
-  });
-}
-function focusedDeviceTimerSet(event)
-{
-  inputString = $("#timeset-value").val();
-  var exp = RegExp("[0-9][0-9]:[0-9][0-9]");
-  if(!exp.test(inputString))
-  {
-    alert("Format required: MM:SS!");
-    return;
-  }
-  splitString = inputString.split(":");
-  totalSeconds = parseInt(splitString[0])*60+parseInt(splitString[1]);
-  console.log(totalSeconds);
-  $.ajax({
-    url : 'http://' + devices[focusedDevice][3] + ':' + devicesPort + '/timer/set?totalseconds=' + totalSeconds,
+    url : 'http://' + devices[event.data.device][3] + ':' + devicesPort + event.data.command,
     cache : false,
     dataType : "json",
     crossDomain : true
