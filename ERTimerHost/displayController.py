@@ -45,11 +45,11 @@ class AF_HT16K33_7Seg(IDisplayController):
         self.setSeconds(seconds)
     def onEvent(self, event):
         if(event.type == TimerEvent.EVENT_RESUME or event.type == TimerEvent.EVENT_PAUSE):
-            self.setSeconds(event.data[0])
+            self.setSeconds(event.data)
         elif(event.type == TimerEvent.EVENT_HITZERO):
             self.blink = True
             self.display.blink_rate = 2
         elif(event.type == TimerEvent.EVENT_TIMECHANGED):
-            if(event.data[0]>0):
+            if(event.data>0):
                 self.blink = False
                 self.display.blink_rate = 0
