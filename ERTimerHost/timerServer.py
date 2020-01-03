@@ -3,11 +3,8 @@ from roomdevices import ROOMDEVICES
 import threading
 import socket
 import json
-
-class TimerEventListener():
-    def onEvent(self, event):
-        raise NotImplementedError
-class TimerServer():
+from timerController import TimerEvent, TimerEventListener
+class TimerServer(TimerEventListener):
     STATE_NULL        = 0
     STATE_READY       = 1
     STATE_STARTED     = 2
@@ -131,3 +128,7 @@ class TimerServer():
     def notifyStateChangeListeners(self, newState):
         for listener in self.eventListeners:
             listener.onEvent(newState)
+    def onEvent(self, event):
+        if(event.type == TimerEvent.EVENT_HITZERO):
+            self._state = TimerServer.STATE_STOPPED_END
+    

@@ -20,6 +20,7 @@ def test_timerHTTP():
     tmr.appendEventListener(dsp)
     tmr.setStart(3600)
     server = TimerServer(tmr,'Test Room #1','0.0.0.0', 8080, 4000)
+    tmr.appendEventListener(server)
     tmr.pause()
     server.broadcastSelf()
     server.startThreaded()
