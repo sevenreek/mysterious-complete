@@ -61,7 +61,7 @@ class DeviceDetectorServer():
     def _index(self):
         return self._server_static('index.html')
     def _dashboard(self):
-        return self._server_static('dashobard.html')
+        return self._server_static('dashboard.html')
     def _server_static(self, filepath):
         directory = os.path.join(os.path.dirname(__file__), '..', 'ERAdmin')
         return static_file(filepath, directory)
