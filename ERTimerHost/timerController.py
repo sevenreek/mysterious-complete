@@ -13,6 +13,7 @@ class TimerEvent():
     EVENT_RESUME = 1
     EVENT_PAUSE = 2
     EVENT_HITZERO = 3
+    EVENT_TIMECHANGED = 4
     def __init__(self, etype, data):
         self.type = etype
         self.data = data
@@ -45,10 +46,12 @@ class UnthreadedTimer(UpdateListener):
         self.raiseEvent(TimerEvent(TimerEvent.EVENT_RESUME,self.secondsRemaining))
     def setSeconds(self, value):
         self.secondsRemaining = value
+        self.raiseEvent(TimerEvent(TimerEvent.EVENT_TIMECHANGED, self.secondsRemaining))
     def getStatus(self):
         return (self.secondsRemaining, self.countingDown)
     def addSeconds(self, value):
         self.secondsRemaining = self.secondsRemaining + value
+        self.raiseEvent(TimerEvent(TimerEvent.EVENT_TIMECHANGED, self.secondsRemaining))
     def appendTickListener(self, listener):
         self.tickListeners.append(listener)
     def appendEventListener(self, listener):
