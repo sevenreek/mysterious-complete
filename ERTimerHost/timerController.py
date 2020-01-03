@@ -42,8 +42,9 @@ class UnthreadedTimer(UpdateListener):
         self.raiseEvent(TimerEvent(TimerEvent.EVENT_PAUSE,self.secondsRemaining))
     def resume(self):
         self.lastTick = time.time()
-        self.countingDown = True
-        self.raiseEvent(TimerEvent(TimerEvent.EVENT_RESUME,self.secondsRemaining))
+        if(self.secondsRemaining>0):
+            self.countingDown = True
+            self.raiseEvent(TimerEvent(TimerEvent.EVENT_RESUME,self.secondsRemaining))
     def setSeconds(self, value):
         self.secondsRemaining = value
         self.raiseEvent(TimerEvent(TimerEvent.EVENT_TIMECHANGED, self.secondsRemaining))
