@@ -39,6 +39,7 @@ class TimerServer():
         self._bottleApp.route('/timer/play', method="GET", callback=self._play)
         self._bottleApp.route('/timer/stop', method="GET", callback=self._stop)
         self._bottleApp.route('/timer/set', method="GET", callback=self._set)
+        self._bottleApp.route('/timer/reset', method="GET", callback=self._reset)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/broadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
@@ -61,10 +62,12 @@ class TimerServer():
         else:
             self._state = TimerServer.STATE_RESUMED
         self.notifyStateChangeListeners(self._state)
+        return self._status()
     def _stop(self):
         self._timerSocket.pause()
         self._state = TimerServer.STATE_STOPPED_END
         self.notifyStateChangeListeners(self._state)
+        return self._status()
     def _set(self):
         try:
             seconds = int(request.query.get('totalseconds'))
@@ -76,6 +79,16 @@ class TimerServer():
         try:
             seconds = int(request.query.get('totalseconds'))
             self._timerSocket.addSeconds(seconds)
+            return self._status()
+        except ValueError:
+            return self._status()
+    def _reset(self):
+        try:
+            seconds = int(request.query.get('totalseconds'))
+            self._timerSocket.setSeconds(seconds)
+            self._timerSocket.pause()
+            self._state = TimerServer.STATE_READY
+            self.notifyStateChangeListeners(self._state)
             return self._status()
         except ValueError:
             return self._status()

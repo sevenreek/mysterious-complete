@@ -184,7 +184,12 @@ $( document ).ready(function() {
               </div>\
             </div>\
           ') // end device html card
-          $('#dev'+deviceIndexInDevicesArray+'-name').html(deviceID + " (" + model + ")"); // 
+          $('head').append("<script>\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-play').click({device: "+deviceIndexInDevicesArray+", command: '/timer/play'}, sendCommand);\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-pause').click({device: "+deviceIndexInDevicesArray+", command: '/timer/pause'}, sendCommand);\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click({device: "+deviceIndexInDevicesArray+", command: '/timer/stop'}, sendCommand);\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click({device: "+deviceIndexInDevicesArray+", command: '/timer/reset?'}, sendCommand);\
+          <\/script>");
         }, // end success
         error: function (xhr, status, error) {
           console.log("error:" + xhr.responseText);
