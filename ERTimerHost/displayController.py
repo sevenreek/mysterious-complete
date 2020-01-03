@@ -49,6 +49,7 @@ class AF_HT16K33_7Seg(IDisplayController):
         elif(event.type == TimerEvent.EVENT_HITZERO):
             self.blink = True
             self.display.blink_rate = 2
+            print("Hit zero event")
         elif(event.type == TimerEvent.EVENT_TIMECHANGED):
             if(event.data[0]>0):
                 self.blink = False
