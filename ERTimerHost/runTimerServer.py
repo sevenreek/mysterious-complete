@@ -17,6 +17,7 @@ def test_timerHTTP():
     i2c = busio.I2C(board.SCL, board.SDA)
     dsp = AF_HT16K33_7Seg(i2c)
     tmr.appendTickListener(dsp)
+    tmr.appendEventListener(dsp)
     tmr.setStart(3600)
     server = TimerServer(tmr,'Test Room #1','0.0.0.0', 8080, 4000)
     tmr.pause()
