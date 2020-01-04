@@ -138,7 +138,9 @@ $( document ).ready(function() {
           $('head').append("<script>\
           $('#dev"+deviceIndexInDevicesArray+"-btn-play').click({device: "+deviceIndexInDevicesArray+", command: '/timer/play'}, sendCommand);\
           $('#dev"+deviceIndexInDevicesArray+"-btn-pause').click({device: "+deviceIndexInDevicesArray+", command: '/timer/pause'}, sendCommand);\
-          $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click({device: "+deviceIndexInDevicesArray+", command: '/timer/stop'}, sendCommand);\
+          $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click(function() {\
+            if(confirm('Zakończyć grę?\\nTej akcji może nie dać się cofnąć.')) sendCommandString(deviceIndexInDevicesArray,'/timer/stop');\
+          });\
           $('#dev"+deviceIndexInDevicesArray+"-btn-reset').click(function() {\
             var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-reset-val').val());\
             sendCommandString(deviceIndexInDevicesArray,'/timer/reset?totalseconds='+secs);\
