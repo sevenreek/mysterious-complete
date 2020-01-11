@@ -3,6 +3,7 @@ import board
 from timerController import UnthreadedTimer
 from displayController import AF_HT16K33_7Seg, CommandLineDisplay
 from timerServer import TimerServer
+from CONFIGURATION import *
 def test_justTimer():
     tmr = UnthreadedTimer()
     i2c = busio.I2C(board.SCL, board.SDA)
@@ -14,7 +15,7 @@ def test_justTimer():
 
 def test_timerHTTP():
     tmr = UnthreadedTimer()
-    roomname = "Test Room #1"
+    roomname = CFG_ROOM_NAME
     dsp = None
     try:
         i2c = busio.I2C(board.SCL, board.SDA)
@@ -28,7 +29,7 @@ def test_timerHTTP():
     tmr.appendTickListener(dsp)
     tmr.appendEventListener(dsp)
     tmr.setStart(3600)
-    server = TimerServer(tmr, roomname, '0.0.0.0', 8080, 4000)
+    server = TimerServer(tmr, roomname, CFG_HTTP_SEVER_HOST, CFG_HTTP_SERVER_PORT, CFG_UDP_DETECT_BROADCAST_PORT)
     tmr.appendEventListener(server)
     tmr.pause()
     server.broadcastSelf()
