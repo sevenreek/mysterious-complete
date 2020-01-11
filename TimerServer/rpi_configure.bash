@@ -2,6 +2,13 @@ if [ "$(id -u)" != 0 ]; then
   echo 'Blad! Uruchom skrypt z sudo: sudo bash rpi_configure.bash.'
   exit 1
 fi
+echo '>>> Sprawdzam polaczenie z internetem...'
+if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
+  echo "OK"
+else
+  echo "Blad! Brak polaczenia z internetem"
+  exit 1
+fi
 echo '>>> Aktualizuje system...'
 sudo apt -y upgrade
 sudo apt -y update
@@ -45,13 +52,7 @@ sudo pip3 install bottle
 sudo pip3 install adafruit-circuitpython-ht16k33
 sudo pip3 install adafruit-blinka
 sudo pip3 install python-vlc
-echo '>>> Sciagam skrypty...'
-if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
-    cd Desktop/
-    git clone https://github.com/sevenreek/mysterious-complete
-else
-  echo "Brak polaczenia z internetem"
-fi
+
 read -p "Konfiguracja zakonczona. Uruchomic ponownie? [y/n]" -n 1 -r
 echo    
 if [[ $REPLY =~ ^[Yy]$ ]]
