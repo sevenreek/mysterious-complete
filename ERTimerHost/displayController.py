@@ -14,7 +14,6 @@ class IDisplayController(TickListener, TimerEventListener):
         raise NotImplementedError
     def onTick(self, seconds, countingDown):
         raise NotImplementedError
-        
     def onEvent(self, event):
         raise NotImplementedError
 class AF_HT16K33_7Seg(IDisplayController):
@@ -53,3 +52,19 @@ class AF_HT16K33_7Seg(IDisplayController):
             if(event.data>0):
                 self.blink = False
                 self.display.blink_rate = 0
+class CommandLineDisplay(IDisplayController):
+    def killDisplay(self):
+        pass
+    def enableDisplay(self):
+        pass
+    def setSeconds(self, totalSeconds):
+        minutes = totalSeconds // 60
+        seconds = totalSeconds - minutes * 60
+        stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
+        print('\r'+stringToDisplay,end='')
+    def setDisplayMode(self, mode):
+        pass
+    def onTick(self, seconds, countingDown):
+        self.setSeconds(seconds)
+    def onEvent(self, event):
+        self.setSeconds(event.data)
