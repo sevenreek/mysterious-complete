@@ -49,8 +49,8 @@ sudo apt install -y i2c-tools
 echo '>>> Instaluje bilbioteki python...'
 sudo pip3 install --upgrade pip
 sudo pip3 install bottle
-sudo pip3 install adafruit-blinka
-sudo pip3 install adafruit-circuitpython-ht16k33
+sudo pip3 install adafruit-blinka --ignore-installed
+sudo pip3 install adafruit-circuitpython-ht16k33 --ignore-installed
 sudo pip3 install python-vlc
 
 read -p "Konfiguracja zakonczona. Uruchomic ponownie? [y/n]" -n 1 -r
