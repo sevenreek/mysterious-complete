@@ -1,3 +1,5 @@
+PATH_G_AUTOSTART=/etc/xdg/lxsession/LXDE-pi/autostart
+PATH_REPO_START=/home/pi/Desktop/mysterious-complete/TimerServer/start
 if [ "$(id -u)" != 0 ]; then
   echo 'Blad! Uruchom skrypt z sudo: sudo bash rpi_configure.bash.'
   exit 1
@@ -52,6 +54,16 @@ sudo pip3 install bottle
 sudo pip3 install adafruit-blinka --ignore-installed
 sudo pip3 install adafruit-circuitpython-ht16k33 --ignore-installed
 sudo pip3 install python-vlc
+echo '>>> Konfiguruje VNC...'
+sudo ln -s /usr/lib/systemd/system/vncserver-x11-serviced.service /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+sudo systemctl start vncserver-x11-serviced
+echo ">>> Ustawiam skrypt w autostarcie"
+if grep -q PATH_REPO_START PATH_G_AUTOSTART; then
+    echo "Autostart juz był konfigurowany. Reczna konfiguracja moze byc wymagana."
+else
+    sudo echo "@lxterminal -e ${PATH_REPO_START}" >> PATH_G_AUTOSTART
+fi
+
 
 read -p "Konfiguracja zakonczona. Uruchomic ponownie? [y/n]" -n 1 -r
 echo    
