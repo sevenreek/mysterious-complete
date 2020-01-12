@@ -11,15 +11,19 @@ else
   echo "Blad! Brak polaczenia z internetem"
   exit 1
 fi
+echo "Koniec"
 echo '>>> Aktualizuje system...'
 sudo apt -y upgrade
 sudo apt -y update
 sudo apt -y clean
+echo "Koniec"
 echo '>>> Instaluje pulpit zdalny...'
 sudo apt -y install xrdp
+echo "Koniec"
 echo '>>> Uruchamiam SSH...'
 sudo systemctl enable ssh
 sudo systemctl start ssh
+echo "Koniec"
 echo '>>> Uruchamiam I2C...'
 if grep -q 'i2c-bcm2708' /etc/modules; then
   echo 'i2c-bcm2708 module already exists, skip this step.'
@@ -47,6 +51,7 @@ if [ -f /etc/modprobe.d/raspi-blacklist.conf ]; then
 else
   echo 'raspi-blacklist.conf does not exist, skip this step.'
 fi
+echo "Koniec"
 sudo apt install -y i2c-tools
 echo '>>> Instaluje bilbioteki python...'
 sudo pip3 install --upgrade pip
@@ -54,17 +59,21 @@ sudo pip3 install bottle
 sudo pip3 install adafruit-blinka --ignore-installed
 sudo pip3 install adafruit-circuitpython-ht16k33 --ignore-installed
 sudo pip3 install python-vlc
+echo "Koniec"
 echo '>>> Konfiguruje VNC...'
 sudo ln -s /usr/lib/systemd/system/vncserver-x11-serviced.service /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
 sudo systemctl start vncserver-x11-serviced
-echo ">>> Ustawiam skrypt w autostarcie"
-if grep -q PATH_REPO_START PATH_G_AUTOSTART; then
-    echo "Autostart juz był konfigurowany. Reczna konfiguracja moze byc wymagana."
+echo "Koniec"
+echo ">>> Ustawiam skrypt w autostarcie..."
+if [ ! -f "$PATH_G_AUTOSTART" ] || [ ! -f "$PATH_REPO_START" ]; then
+	echo "Jeden z plikow koniecznych do konfiguracji autostartu nie istnieje."
 else
-    sudo echo "@lxterminal -e ${PATH_REPO_START}" >> PATH_G_AUTOSTART
+	if grep -q ${PATH_REPO_START} ${PATH_G_AUTOSTART}; then
+	    echo "Autostart juz był konfigurowany. Reczna konfiguracja moze byc wymagana."
+	else
+	    sudo echo "@lxterminal -e ${PATH_REPO_START}" >> $PATH_G_AUTOSTART
+	fi
 fi
-
-
 read -p "Konfiguracja zakonczona. Uruchomic ponownie? [y/n]" -n 1 -r
 echo    
 if [[ $REPLY =~ ^[Yy]$ ]]
