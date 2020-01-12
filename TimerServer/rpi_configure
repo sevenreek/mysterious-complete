@@ -1,12 +1,12 @@
 PATH_G_AUTOSTART=/etc/xdg/lxsession/LXDE-pi/autostart
 PATH_REPO_START=/home/pi/Desktop/mysterious-complete/TimerServer/start
 if [ "$(id -u)" != 0 ]; then
-  echo 'Blad! Uruchom skrypt z sudo: sudo bash rpi_configure.bash.'
+  echo 'Blad! Uruchom skrypt z sudo: sudo bash rpi_configure'
   exit 1
 fi
 echo '>>> Sprawdzam polaczenie z internetem...'
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
-  echo "OK"
+  echo "Koniec"
 else
   echo "Blad! Brak polaczenia z internetem"
   exit 1
