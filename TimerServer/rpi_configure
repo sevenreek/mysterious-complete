@@ -6,24 +6,24 @@ if [ "$(id -u)" != 0 ]; then
 fi
 echo '>>> Sprawdzam polaczenie z internetem...'
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
-  echo "Koniec"
+  echo "OK."
 else
   echo "Blad! Brak polaczenia z internetem"
   exit 1
 fi
-echo "Koniec"
+echo "OK."
 echo '>>> Aktualizuje system...'
 sudo apt -y upgrade
 sudo apt -y update
 sudo apt -y clean
-echo "Koniec"
-echo '>>> Instaluje pulpit zdalny...'
+echo "OK."
+echo '>>> Instaluje pulpit zdalny xrdp...'
 sudo apt -y install xrdp
-echo "Koniec"
+echo "OK."
 echo '>>> Uruchamiam SSH...'
 sudo systemctl enable ssh
 sudo systemctl start ssh
-echo "Koniec"
+echo "OK."
 echo '>>> Uruchamiam I2C...'
 if grep -q 'i2c-bcm2708' /etc/modules; then
   echo 'i2c-bcm2708 module already exists, skip this step.'
@@ -51,7 +51,7 @@ if [ -f /etc/modprobe.d/raspi-blacklist.conf ]; then
 else
   echo 'raspi-blacklist.conf does not exist, skip this step.'
 fi
-echo "Koniec"
+echo "OK."
 sudo apt install -y i2c-tools
 echo '>>> Instaluje bilbioteki python...'
 sudo pip3 install --upgrade pip
@@ -59,11 +59,11 @@ sudo pip3 install bottle
 sudo pip3 install adafruit-blinka --ignore-installed
 sudo pip3 install adafruit-circuitpython-ht16k33 --ignore-installed
 sudo pip3 install python-vlc
-echo "Koniec"
+echo "OK."
 echo '>>> Konfiguruje VNC...'
 sudo ln -s /usr/lib/systemd/system/vncserver-x11-serviced.service /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
 sudo systemctl start vncserver-x11-serviced
-echo "Koniec"
+echo "OK."
 echo ">>> Ustawiam skrypt w autostarcie..."
 if [ ! -f "$PATH_G_AUTOSTART" ] || [ ! -f "$PATH_REPO_START" ]; then
 	echo "Jeden z plikow koniecznych do konfiguracji autostartu nie istnieje."
@@ -72,8 +72,12 @@ else
 	    echo "Autostart juz był konfigurowany. Reczna konfiguracja moze byc wymagana."
 	else
 	    sudo echo "@lxterminal -e ${PATH_REPO_START}" >> $PATH_G_AUTOSTART
+      echo "OK."
 	fi
 fi
+echo ">>> Ustawiam uprawnienia execute dla pliku start..."
+sudo chmod 777 ${PATH_REPO_START}
+echo "OK."
 read -p "Konfiguracja zakonczona. Uruchomic ponownie? [y/n]" -n 1 -r
 echo    
 if [[ $REPLY =~ ^[Yy]$ ]]
