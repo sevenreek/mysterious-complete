@@ -186,6 +186,10 @@ function updateRoomState(deviceIndex, statusData)
   {
     $("#dev" + deviceIndex + '-times').html(startedOn + "-" + endsOn);
   }
+  else
+  {
+    $("#dev" + deviceIndex + '-times').html("##:##" + "-" + "##:##");
+  }
   $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
   switch(deviceState) {
     case ROOM_STATES.STATE_READY:
