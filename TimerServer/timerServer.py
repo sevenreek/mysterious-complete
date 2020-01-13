@@ -1,27 +1,20 @@
 from bottle import Bottle, route, run, template, request, response
 from roomdevices import ROOMDEVICES
+from roomController import RoomEvent
 import threading
 import socket
 import json
-from timerController import TimerEvent, TimerEventListener
-class TimerServer(TimerEventListener):
-    STATE_NULL        = 0
-    STATE_READY       = 1
-    STATE_STARTED     = 2
-    STATE_RESUMED     = 3
-    STATE_PAUSED      = 4
-    STATE_STOPPED_END = 5
-    STATE_STOPPED_WIN = 6
-    def __init__(self, timerInterface, roomID, host, port, broadcastPort):
+class TimerServer():
+    def __init__(self, timerInterface, roomID, roomName, host, port, broadcastPort, roomController):
         self._timerSocket = timerInterface
         self._host = host
         self._port = port
         self._broadcastPort = broadcastPort
         self._roomID = roomID
-        self._state = TimerServer.STATE_READY
-        self.eventListeners = []
+        self._roomName = roomName
+        self.roomctrl = roomController
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
+        try: # try to obtain local ip of device
             # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
             self._deviceIP = s.getsockname()[0]
@@ -43,33 +36,21 @@ class TimerServer(TimerEventListener):
         self._bottleApp.route('/who', method="GET", callback=self._who)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
     def _status(self):
-        timerState = self._timerSocket.getStatus()
-        totalSeconds = timerState[0]
-        timerRunning = timerState[1]
-        return json.dumps((totalSeconds, timerRunning, self._state))
+        jsonf = json.dumps(self.roomctrl.getState().__dict__) 
+        return jsonf
     def _pause(self):
-        self._timerSocket.pause()
-        if(self._state == TimerServer.STATE_STARTED or self._state == TimerServer.STATE_RESUMED):
-            self._state = TimerServer.STATE_PAUSED
-            self.notifyStateChangeListeners(self._state)
+        self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PAUSE))
         return self._status()
     def _play(self):
-        self._timerSocket.resume()
-        if(self._state == TimerServer.STATE_READY):
-            self._state = TimerServer.STATE_STARTED
-        else:
-            self._state = TimerServer.STATE_RESUMED
-        self.notifyStateChangeListeners(self._state)
+        self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PLAY))
         return self._status()
     def _stop(self):
-        self._timerSocket.pause()
-        self._state = TimerServer.STATE_STOPPED_END
-        self.notifyStateChangeListeners(self._state)
+        self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_STOP))
         return self._status()
     def _set(self):
         try:
             seconds = int(request.query.get('totalseconds'))
-            self._timerSocket.setSeconds(seconds)
+            self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_SETTIME, seconds))
         except (ValueError, TypeError) as e:
             print(e)
             return self._status() 
@@ -77,7 +58,7 @@ class TimerServer(TimerEventListener):
     def _add(self):
         try:
             seconds = int(request.query.get('totalseconds'))
-            self._timerSocket.addSeconds(seconds)
+            self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_ADDTIME, seconds))
             return self._status()
         except (ValueError, TypeError) as e:
             print(e)
@@ -85,10 +66,7 @@ class TimerServer(TimerEventListener):
     def _reset(self):
         try:
             seconds = int(request.query.get('totalseconds'))
-            self._timerSocket.setSeconds(seconds)
-            self._timerSocket.pause()
-            self._state = TimerServer.STATE_READY
-            self.notifyStateChangeListeners(self._state)
+            self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_RESET, seconds))
             return self._status()
         except (ValueError, TypeError) as e:
             print(e)
@@ -123,12 +101,4 @@ class TimerServer(TimerEventListener):
         response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
     def startThreaded(self):
         threading.Thread(target=self.startServer).start()
-    def appendListener(self, listener):
-        self.eventListeners.append(listener)
-    def notifyStateChangeListeners(self, newState):
-        for listener in self.eventListeners:
-            listener.onEvent(newState)
-    def onEvent(self, event):
-        if(event.type == TimerEvent.EVENT_HITZERO):
-            self._state = TimerServer.STATE_STOPPED_END
     

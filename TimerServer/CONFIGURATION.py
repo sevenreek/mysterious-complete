@@ -1,7 +1,8 @@
 # Feel free to edit these
 CFG_ROOM_NAME = "Test Room #1"
-
+CFG_DEFAULT_TIME = 3600 # in seconds
 # Probably don't touch these
+CFG_ROOM_UNIQUE_ID = 0xF000
 CFG_UDP_DETECT_BROADCAST_PORT = 4000
 CFG_HTTP_SERVER_PORT = 8080
 CFG_HTTP_SEVER_HOST = '0.0.0.0'

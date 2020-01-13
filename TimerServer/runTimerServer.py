@@ -4,18 +4,15 @@ from timerController import UnthreadedTimer
 from displayController import AF_HT16K33_7Seg, CommandLineDisplay
 from timerServer import TimerServer
 from CONFIGURATION import *
-def test_justTimer():
-    tmr = UnthreadedTimer()
-    i2c = busio.I2C(board.SCL, board.SDA)
-    dsp = AF_HT16K33_7Seg(i2c)
-    tmr.appendTickListener(dsp)
-    tmr.setStart(3600)
-    while(True):
-        tmr.onUpdate()
-
-def test_timerHTTP():
-    tmr = UnthreadedTimer()
+from roomController import MainRoomController
+from GPIOController import GPIOController
+class UpdateListener():
+    def onUpdate(self):
+        raise NotImplementedError
+def main():
     roomname = CFG_ROOM_NAME
+    roomController = MainRoomController()
+    gpio = GPIOController(roomController)
     dsp = None
     try:
         i2c = busio.I2C(board.SCL, board.SDA)
@@ -26,12 +23,10 @@ def test_timerHTTP():
         print("FAILED TO LOAD I2C DISPLAY! LOADING DEBUG CONSOLE DISPLAY!")
         dsp = CommandLineDisplay()
         roomname += "[ERROR]"
+    tmr = UnthreadedTimer(roomController)
     tmr.appendTickListener(dsp)
-    tmr.appendEventListener(dsp)
-    tmr.setStart(3600)
-    server = TimerServer(tmr, roomname, CFG_HTTP_SEVER_HOST, CFG_HTTP_SERVER_PORT, CFG_UDP_DETECT_BROADCAST_PORT)
-    tmr.appendEventListener(server)
-    tmr.pause()
+    server = TimerServer(tmr, CFG_ROOM_UNIQUE_ID, roomname, CFG_HTTP_SEVER_HOST, CFG_HTTP_SERVER_PORT, CFG_UDP_DETECT_BROADCAST_PORT, roomController)
+    roomController.initialize(server,tmr,gpio)
     server.broadcastSelf()
     server.startThreaded()
     while(True):
@@ -39,7 +34,7 @@ def test_timerHTTP():
 
 
 if __name__ == "__main__":
-    test_timerHTTP()
+    main()
 
 
 
