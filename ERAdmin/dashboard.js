@@ -178,8 +178,8 @@ function updateRoomState(deviceIndex, statusData)
   var deviceState = statusData.state
   var active = statusData.active
   var totalSeconds = statusData.seconds
-  var startedOn = statusData.startedOn
-  var endsOn = statusData.expecetedEnd
+  var startedOn = statusData.startedon
+  var endsOn = statusData.expecetedend
   var minutes = ~~(totalSeconds / 60); // werid js integer division
   var seconds = totalSeconds - minutes*60;
   if(active)
