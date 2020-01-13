@@ -1,15 +1,13 @@
 function pad3(num, size){ return ('000' + num).substr(-size); }
 //var deviceIPs = ["192.168.0.145", "192.168.0.177"]; // probably load from cookies
-var deviceIPs = ["192.168.0.145"]; // probably load from cookies
+var deviceIPs = ["192.168.0.107"]; // probably load from cookies
 var devicesPort = 8080;
-const TIMER_STATES = {
-  NULL        : 0,
-  READY       : 1,
-  STARTED     : 2,
-  RESUMED     : 3,
-  PAUSED      : 4,
-  STOPPED_END : 5,
-  STOPPED_WIN : 6
+
+const ROOM_STATES = {
+  STATE_READY      : 0,
+  STATE_RUNNING    : 1,
+  STATE_PAUSED     : 2,
+  STATE_STOPPED    : 3
 }
 var devices = [];
 var getUrlParameter = function getUrlParameter(sParam) {
@@ -139,7 +137,7 @@ $( document ).ready(function() {
           $('#dev"+deviceIndexInDevicesArray+"-btn-play').click({device: "+deviceIndexInDevicesArray+", command: '/timer/play'}, sendCommand);\
           $('#dev"+deviceIndexInDevicesArray+"-btn-pause').click({device: "+deviceIndexInDevicesArray+", command: '/timer/pause'}, sendCommand);\
           $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click(function() {\
-            if(confirm('Zakończyć grę?\\nTej akcji może nie dać się cofnąć.')) sendCommandString(deviceIndexInDevicesArray,'/timer/stop');\
+            if(confirm('Zakończyć grę?\\nTej akcji nie da się cofnąć.')) sendCommandString(deviceIndexInDevicesArray,'/timer/stop');\
           });\
           $('#dev"+deviceIndexInDevicesArray+"-btn-reset').click(function() {\
             var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-reset-val').val());\
@@ -177,15 +175,16 @@ function sendCommand(event)
 }
 function updateRoomState(deviceIndex, statusData)
 {
-  var totalSeconds = parseInt(statusData[0]);
-  var timerRunning = statusData[1];
-  var deviceState = statusData[2];
+  var deviceState = statusData.state
+  var active = statusData.active
+  var totalSeconds = statusData.seconds
+  var startedOn = statusData.startedOn
   var minutes = ~~(totalSeconds / 60); // werid js integer division
   var seconds = totalSeconds - minutes*60;
   var countingDown = statusData[1];
   $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
   switch(deviceState) {
-    case TIMER_STATES.READY:
+    case ROOM_STATES.STATE_READY:
       $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
       $("#dev" + deviceIndex + '-card').addClass('border-left-info');
       $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
@@ -194,8 +193,7 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-btn-reset').prop("disabled", false);
       $("#dev" + deviceIndex + '-btn-play-text').html("Rozpocznij grę");
     break;
-    case TIMER_STATES.STARTED:
-    case TIMER_STATES.RESUMED:
+    case ROOM_STATES.STATE_RUNNING:
       $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
@@ -206,7 +204,7 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-btn-reset').prop("disabled", true);
       $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
     break;
-    case TIMER_STATES.PAUSED:
+    case ROOM_STATES.STATE_PAUSED:
       $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').addClass('border-left-warning');
       $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
@@ -214,8 +212,7 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-btn-stop').prop("disabled", false);
       $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
     break;
-    case TIMER_STATES.STOPPED_END:
-    case TIMER_STATES.STOPPED_WIN:
+    case ROOM_STATES.STATE_STOPPED:
       $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');

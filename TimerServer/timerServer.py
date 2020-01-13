@@ -91,8 +91,8 @@ class TimerServer():
         return json.dumps(
             ( 
             ROOMDEVICES.MODEL_RPI,
-            (ROOMDEVICES.TAG_WHO, ROOMDEVICES.TAG_TIMER),
-            self._roomID
+            self._roomID,
+            self._roomName
             )
         ) # this should become a JSON eventually
     def _enable_cors(self):
