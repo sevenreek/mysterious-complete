@@ -1,6 +1,8 @@
 import time
 from roomController import RoomEvent
-from runTimerServer import UpdateListener
+class UpdateListener():
+    def onUpdate(self):
+        raise NotImplementedError
 class TickListener():
     def onTick(self, secLeft, countingDown):
         raise NotImplementedError

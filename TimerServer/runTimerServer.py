@@ -6,9 +6,7 @@ from timerServer import TimerServer
 from CONFIGURATION import *
 from roomController import MainRoomController
 from GPIOController import GPIOController
-class UpdateListener():
-    def onUpdate(self):
-        raise NotImplementedError
+
 def main():
     roomname = CFG_ROOM_NAME
     roomController = MainRoomController()
