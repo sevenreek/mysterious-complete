@@ -50,6 +50,7 @@ class MainRoomController(RoomEventListener):
                 self.roomState = STATE_RUNNING
                 self.gpio.triggerStart()
                 self.timer.resume()
+                self.active = True
             elif(self.roomState == STATE_PAUSED): # resume game
                 self.timer.resume()
                 self.roomState = STATE_RUNNING
@@ -66,6 +67,7 @@ class MainRoomController(RoomEventListener):
                 self.roomState = STATE_STOPPED
                 self.timer.pause()
                 self.gpio.unlockEntrance()
+                self.active = False
         elif(roomEvent.value == RoomEvent.EVT_SERVER_RESET): # reset game from stopped
             if(self.roomState == STATE_STOPPED):
                 self.roomState = STATE_READY
@@ -75,11 +77,13 @@ class MainRoomController(RoomEventListener):
             self.roomState = STATE_STOPPED
             self.timer.pause()
             self.gpio.unlockEntrance()
+            self.active = False
         # BEGIN GPIO EVENTS
         elif(roomEvent.value == RoomEvent.EVT_GPIO_FINISHED): # when finished signal is received, i.e. last puzzle solved
             self.roomState = STATE_STOPPED
             self.timer.pause()
             self.gpio.unlockExit()
+            self.active = False
         elif(roomEvent.value == RoomEvent.EVT_GPIO_PLAY):     
             if(self.roomState == STATE_READY): # start game
                 self.roomState = STATE_RUNNING
@@ -100,6 +104,7 @@ class MainRoomController(RoomEventListener):
             self.roomState = STATE_STOPPED
             self.timer.pause()
             self.gpio.unlockEntrance()
+            self.active = False
         elif(roomEvent.value == RoomEvent.EVT_GPIO_ADDTIME):    
             self.timer.addSeconds(roomEvent.data)
         return GameState(self.roomState, self.gameActive, self.timer.secondsRemaining, self.timeStarted)

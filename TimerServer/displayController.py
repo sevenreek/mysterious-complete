@@ -31,12 +31,12 @@ class AF_HT16K33_7Seg(IDisplayController):
             stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
             print('\r'+stringToDisplay,end='')
             self.display.print(stringToDisplay)
-            self.blink = True
-            self.display.blink_rate = 2
-        else:
-            self.display.print('00:00')
             self.blink = False
             self.display.blink_rate = 0
+        else:
+            self.display.print('00:00')
+            self.blink = True
+            self.display.blink_rate = 2
     def setDisplayMode(self, mode):
         self.mode = mode
     def onTick(self, seconds, countingDown):
