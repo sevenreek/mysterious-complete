@@ -31,7 +31,7 @@ class GameState():
         self.startedon = timeStarted
         hours = timeLeft // 3600
         minutes = (timeLeft - 3600*hours) // 60
-        enddate = datetime.datetime.now() + datetime.timedelta(0,0,0,0,minutes,hours)
+        enddate = datetime.datetime.now() + datetime.timedelta(0,0,0,0,minutes+0.5,hours)
         self.expecetedend = "{:02d}:{:02d}".format(enddate.hour,enddate.minute)
 class MainRoomController(RoomEventListener):
     def __init__(self, server = None, timer = None, gpio = None):
