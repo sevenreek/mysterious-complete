@@ -1,4 +1,5 @@
 from CONFIGURATION import CFG_DEFAULT_TIME
+import datetime
 STATE_READY     = 0
 STATE_RUNNING   = 1
 STATE_PAUSED    = 2
@@ -28,6 +29,9 @@ class GameState():
         self.active = active
         self.seconds = timeLeft
         self.startedon = timeStarted
+        hours = timeLeft // 3600
+        minutes = (timeLeft - 3600*hours) // 60
+        self.expecetedEnd = "{%02d}:{%02d}".format(datetime.datetime.now().hour + hours, datetime.datetime.now().minute + minutes)
 class MainRoomController(RoomEventListener):
     def __init__(self, server = None, timer = None, gpio = None):
         self.server = server
@@ -112,3 +116,8 @@ class MainRoomController(RoomEventListener):
         return self._onEvent(roomEvent)
     def getState(self):
         return GameState(self.roomState, self.gameActive, self.timer.secondsRemaining, self.timeStarted)
+    def setActive(self):
+        self.active = True
+        self.timeStarted = "{%02d}:{%02d}".format(datetime.datetime.now().hour, datetime.datetime.now().minute)
+    def setUnactive(self):
+        self.active = False

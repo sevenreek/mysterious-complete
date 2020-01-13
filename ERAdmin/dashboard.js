@@ -179,9 +179,13 @@ function updateRoomState(deviceIndex, statusData)
   var active = statusData.active
   var totalSeconds = statusData.seconds
   var startedOn = statusData.startedOn
+  var endsOn = statusData.expecetedEnd
   var minutes = ~~(totalSeconds / 60); // werid js integer division
   var seconds = totalSeconds - minutes*60;
-  var countingDown = statusData[1];
+  if(active)
+  {
+    $("#dev" + deviceIndex + '-times').html(startedOn + "-" + endsOn);
+  }
   $('#dev' + deviceIndex + '-primary').html(pad3(minutes,2) + ":" + pad3(seconds,2));
   switch(deviceState) {
     case ROOM_STATES.STATE_READY:
