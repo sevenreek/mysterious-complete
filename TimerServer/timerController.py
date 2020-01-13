@@ -31,10 +31,11 @@ class UnthreadedTimer(UpdateListener):
             self.countingDown = True
     def setSeconds(self, value):
         self.secondsRemaining = value
+        self.onTick()
     def getStatus(self):
         return (self.secondsRemaining, self.countingDown)
     def addSeconds(self, value):
-        self.secondsRemaining = self.secondsRemaining + value
+        self.setSeconds(self.secondsRemaining + value)
     def appendTickListener(self, listener):
         self.tickListeners.append(listener)
     def onTick(self):
