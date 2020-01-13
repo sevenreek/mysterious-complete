@@ -31,7 +31,7 @@ class GameState():
         self.startedon = timeStarted
         hours = timeLeft // 3600
         minutes = (timeLeft - 3600*hours) // 60
-        self.expecetedEnd = "{%02d}:{%02d}".format(datetime.datetime.now().hour + hours, datetime.datetime.now().minute + minutes)
+        self.expecetedEnd = "{:02d}:{:02d}".format(datetime.datetime.now().hour + hours, datetime.datetime.now().minute + minutes)
 class MainRoomController(RoomEventListener):
     def __init__(self, server = None, timer = None, gpio = None):
         self.server = server
@@ -118,6 +118,6 @@ class MainRoomController(RoomEventListener):
         return GameState(self.roomState, self.gameActive, self.timer.secondsRemaining, self.timeStarted)
     def setActive(self):
         self.active = True
-        self.timeStarted = "{%02d}:{%02d}".format(datetime.datetime.now().hour, datetime.datetime.now().minute)
+        self.timeStarted = "{:02d}:{:02d}".format(datetime.datetime.now().hour, datetime.datetime.now().minute)
     def setUnactive(self):
         self.active = False
