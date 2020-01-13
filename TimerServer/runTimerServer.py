@@ -23,6 +23,7 @@ def main():
         roomname += "[ERROR]"
     tmr = UnthreadedTimer(roomController)
     tmr.appendTickListener(dsp)
+    tmr.setSeconds(CFG_DEFAULT_TIME)
     server = TimerServer(tmr, CFG_ROOM_UNIQUE_ID, roomname, CFG_HTTP_SEVER_HOST, CFG_HTTP_SERVER_PORT, CFG_UDP_DETECT_BROADCAST_PORT, roomController)
     roomController.initialize(server,tmr,gpio)
     server.broadcastSelf()
