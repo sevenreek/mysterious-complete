@@ -12,11 +12,16 @@ else
   exit 1
 fi
 echo "OK."
-echo '>>> Aktualizuje system...'
-sudo apt -y upgrade
-sudo apt -y update
-sudo apt -y clean
-echo "OK."
+read -p "Zaktualizowac system? [y/n]" -n 1 -r
+echo    
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  echo '>>> Aktualizuje system...'
+  sudo apt -y upgrade
+  sudo apt -y update
+  sudo apt -y clean
+  echo "OK."
+fi
 echo '>>> Instaluje pulpit zdalny xrdp...'
 sudo apt -y install xrdp
 echo "OK."
