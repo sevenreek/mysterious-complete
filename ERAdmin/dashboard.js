@@ -1,6 +1,6 @@
 function pad3(num, size){ return ('000' + num).substr(-size); }
 //var deviceIPs = ["192.168.0.145", "192.168.0.177"]; // probably load from cookies
-var deviceIPs = ["192.168.0.107"]; // probably load from cookies
+var deviceIPs = ["192.168.0.107","192.168.0.186","192.168.0.190"]; // probably load from cookies
 var devicesPort = 8080;
 
 const ROOM_STATES = {
@@ -46,6 +46,7 @@ $(function(){
           },
           error: function (xhr, status, error) {
             console.log("error:" + xhr.responseText);
+            $('#dev' + deviceIndex + '-primary').html('FAIL');
           }
         });
       })(deviceIndex);
@@ -79,12 +80,12 @@ $( document ).ready(function() {
               <div class="card border-left-success shadow h-100 py-2" id="dev'+deviceIndexInDevicesArray+'-card">\
                 <div class="card-body">\
                   <div class="row no-gutters align-items-center">\
-                    <div class="col-xl-1 col-md-2 col-xs-6 align-items-center">\
-                      <div class="text-xs font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceID+'('+model+')'+'</div>\
-                      <div class="h5 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">21:38</div>\
+                    <div class="col-xl-2 col-md-3 col-xs-6 align-items-center">\
+                      <div class="h6 font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceID+'('+model+')'+'</div>\
+                      <div class="h4 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">21:38</div>\
                       <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-times">##:##-##:##</div>\
                     </div>\
-                    <div class="col-xl-11 col-md-10 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">\
+                    <div class="col-xl-10 col-md-9 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">\
                       <div class="bd-highlight">\
                         <button href="#" class="btn btn-success btn-icon-split m-1" id="dev'+deviceIndexInDevicesArray+'-btn-play" disabled>\
                           <span class="icon text-white-50">\
@@ -141,11 +142,11 @@ $( document ).ready(function() {
           });\
           $('#dev"+deviceIndexInDevicesArray+"-btn-reset').click(function() {\
             var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-reset-val').val());\
-            sendCommandString(deviceIndexInDevicesArray,'/timer/reset?totalseconds='+secs);\
+            sendCommandString("+deviceIndexInDevicesArray+",'/timer/reset?totalseconds='+secs);\
           });\
           $('#dev"+deviceIndexInDevicesArray+"-btn-add').click(function() {\
             var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-add-val').val());\
-            sendCommandString(deviceIndexInDevicesArray,'/timer/add?totalseconds='+secs);\
+            sendCommandString("+deviceIndexInDevicesArray+",'/timer/add?totalseconds='+secs);\
           });\
           <\/script>");
         }, // end success
@@ -225,7 +226,7 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
       $("#dev" + deviceIndex + '-card').addClass('border-left-danger');
-      $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
+      $("#dev" + deviceIndex + '-btn-play').prop("disabled", true);
       $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
       $("#dev" + deviceIndex + '-btn-stop').prop("disabled", true);
       $("#dev" + deviceIndex + '-btn-reset').prop("disabled", false);
