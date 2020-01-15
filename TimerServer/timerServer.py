@@ -6,7 +6,7 @@ import threading
 import socket
 import json
 class TimerServer():
-    BROADCAST_REPEAT_PERIOD = 30
+    BROADCAST_REPEAT_PERIOD = 10
     def __init__(self, timerInterface, roomID, roomName, host, port, broadcastPort, roomController):
         self._timerSocket = timerInterface
         self._host = host
@@ -83,9 +83,9 @@ class TimerServer():
         broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         jsonFile = json.dumps(
             ( 
-            ROOMDEVICES.MODEL_RPI,
+            self._roomName,
             self._roomID,
-            self._roomName
+            ROOMDEVICES.MODEL_RPI
             )
         )
         byteSequence = bytes(jsonFile, 'utf-8') 
@@ -99,9 +99,9 @@ class TimerServer():
     def _who(self):
         return json.dumps(
             ( 
-            ROOMDEVICES.MODEL_RPI,
+            self._roomName,
             self._roomID,
-            self._roomName
+            ROOMDEVICES.MODEL_RPI
             )
         )
     def _link(self):

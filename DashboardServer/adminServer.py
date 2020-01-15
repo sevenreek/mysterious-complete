@@ -43,10 +43,11 @@ class DeviceDetectorServer():
                     else:
                         print('New device recognized: ' + str(deviceIP))
                         print('Linking...')
-                        requests.get(url = str(deviceIP) + ':' + str(self._port) + '/link') 
+                        requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link') 
                         self._devicesIPs.append(deviceIP)
-            except:
+            except Exception as e:
                 print('Error while processing UDP broadcast.')
+                print(e)
         self._threadAlive = False
     def startCommunicationServer(self):
         self._bottleApp.run(host=self._host, port=self._port)
