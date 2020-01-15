@@ -33,14 +33,16 @@ class DeviceDetectorServer():
                 packet = self._socket.recvfrom(UDP_BUFFER_SIZE)
                 deviceIP = packet[1][0]
                 message = packet[0].decode('utf-8')
-                splitMsg = message.split('\n') # change this when moved to JSONs
-                print('got packet with ' + str(len(splitMsg)) + ' lines')
-                if(len(splitMsg) == UDP_MESSAGE_LINE_COUNT and splitMsg[0] in ROOMDEVICES.MODELS):
+                print("New UDP received:")
+                print(message)
+                deviceData = json.loads(message)
+                if((deviceData[1] & 0xDE00) == 0xDE00):
+                # maybe check if id is acceptable or something               
                     if(deviceIP in self._devicesIPs):
-                        print('Received broadcast from known device')
+                        print('Device already known')
                     else:
-                        print('Received broadcast from new device: ' + str(deviceIP))
-                        print('Linking device '+str(deviceIP))
+                        print('New device recognized: ' + str(deviceIP))
+                        print('Linking...')
                         requests.get(url = str(deviceIP) + ':' + str(self._port) + '/link') 
                         self._devicesIPs.append(deviceIP)
             except:

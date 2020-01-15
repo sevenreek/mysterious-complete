@@ -84,8 +84,8 @@ class TimerServer():
         jsonFile = json.dumps(
             ( 
             ROOMDEVICES.MODEL_RPI,
-            self._roomName,
-            self._roomID
+            self._roomID,
+            self._roomName
             )
         )
         byteSequence = bytes(jsonFile, 'utf-8') 
