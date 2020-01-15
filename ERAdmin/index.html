@@ -17,10 +17,11 @@
   <link href="https://fonts.googleapis.com/css?family=Orbitron&display=swap" rel="stylesheet">
 
 
+
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
   <link href="css/sb-admin-2-user.css" rel="stylesheet">
-
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -90,161 +91,39 @@
       <div id="content">
 
         <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow pl-4">
 
           <!-- Sidebar Toggle (Topbar) -->
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
 
-          Escape Room Control System Mockup
-
-         
+          Aktywne Pokoje
+          
+          
 
             <div class="topbar-divider d-none d-sm-block"></div>
-
+            <div style="margin-left:auto; margin-right:0;">
+              <span class="mr-3">Konfiguracja IP:</span><input type="checkbox" data-toggle="toggle" data-style="ios" data-on="Dynamiczna" data-off="Statyczna" checked id="use-auto-ip">
+            </div>
         </nav>
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-          <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-redo-alt fa-sm text-white-50"></i> Refresh</a>
-          </div>
+          
 
           <!-- Content Row -->
           <div class="row" id="connected-devices-list">
 
-            <!-- Room Overview Card 
-            <div class="col-xl-3 col-md-6 mb-4">
-              <a href="?focusDevice=0" class="card-clickable card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev0-name"></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev0-primary">##:##</div>
-                    </div>
-                    <div class="col-auto" id="dev0-ico">
-                      <i class="fas fa-stopwatch fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>-->
-            <!-- Room Overview Card
-            <div class="col-xl-3 col-md-6 mb-4">
-              <a href="?focusDevice=1" class="card-clickable card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev1-name"></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev1-primary">##:##</div>
-                    </div>
-                    <div class="col-auto" id="dev1-ico">
-                      <i  class="fas fa-stopwatch fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div> -->
-            <!-- Room Overview Card 
-            <div class="col-xl-3 col-md-6 mb-4">
-              <a href="?focusDevice=2" class="card-clickable card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev2-name"></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev2-primary">##:##</div>
-                    </div>
-                    <div class="col-auto" id="dev2-ico">
-                      
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>-->
-            <!-- Room Overview Card 
-            <div class="col-xl-3 col-md-6 mb-4">
-              <a href="?focusDevice=3" class="card-clickable card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="dev3-name"></div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="dev3-primary">##:##</div>
-                    </div>
-                    <div class="col-auto" id="dev3-ico">
-                      
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>-->
+            
+            
            
           </div>
           <!-- Content Row -->
 
-          <div class="row">
-
-            <!-- Room Control -->
-            <div class="col-xl-12" id="focused-device-card">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary" id="focused-device-name">CHOSEN ROOM</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="row">
-                    
-                    <div class="col-xl-2 col-sm-12 text-center my-auto">
-                      <h1 id="focused-device-primary">##:##</h1>
-                    </div>
-                    <div class="col-xl-8 col-sm-12">
-                      <a href="#" class="btn btn-success btn-icon-split btn-lg m-1" id="fd-btn-resume">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-play"></i>
-                        </span>
-                        <span class="text">Resume</span>
-                      </a>
-                    
-                      <a href="#" class="btn btn-danger btn-icon-split btn-lg m-1" id="fd-btn-pause">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-pause"></i>
-                        </span>
-                        <span class="text">Pause</span>
-                      </a>
-                      
-                      <a href="#" class="btn btn-warning btn-icon-split btn-lg m-1" id="fd-btn-restart">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-hourglass-start"></i>
-                        </span>
-                        <span class="text">Quick Restart</span>
-                      </a>
-                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
-                        <input type="text" placeholder="MM:SS" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="timeset-value">
-                        <a href="#" class="btn btn-info btn-icon-split btn-lg d-inline-block" id="fd-btn-set">
-                          <span class="icon text-white-50 ">
-                            <i class="fas fa-hourglass "></i>
-                          </span>
-                          <span class="text ">Set Time</span>
-                        </a>
-                      </div>
-                      <a href="#" class="btn btn-info btn-icon-split btn-lg m-1" id="fd-btn-add5">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-hourglass"></i>
-                        </span>
-                        <span class="text">Add 5 Minutes</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+         
 
           
 
@@ -275,7 +154,7 @@
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
   <script src="dashboard.js"></script>
-
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 </body>
 
