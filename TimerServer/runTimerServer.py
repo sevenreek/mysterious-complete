@@ -20,7 +20,7 @@ def main():
         print("FAILED TO LOAD I2C DISPLAY! LOADING DEBUG CONSOLE DISPLAY!")
         print("FAILED TO LOAD I2C DISPLAY! LOADING DEBUG CONSOLE DISPLAY!")
         dsp = CommandLineDisplay()
-        roomname += "[ERROR]"
+        roomname += "[!]"
     tmr = UnthreadedTimer(roomController)
     tmr.appendTickListener(dsp)
     tmr.setSeconds(CFG_DEFAULT_TIME)

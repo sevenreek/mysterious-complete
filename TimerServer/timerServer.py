@@ -6,7 +6,8 @@ import threading
 import socket
 import json
 class TimerServer():
-    BROADCAST_REPEAT_PERIOD = 10
+    BROADCAST_REPEAT_PERIOD_UNLINKED = 5
+    BROADCAST_REPEAT_PERIOD_LINKED = 60
     def __init__(self, timerInterface, roomID, roomName, host, port, broadcastPort, roomController):
         self._timerSocket = timerInterface
         self._host = host
@@ -15,7 +16,8 @@ class TimerServer():
         self._roomID = roomID
         self._roomName = roomName
         self.roomctrl = roomController
-        self._linked = False
+        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
+        self._shouldBroadcast = False
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try: # try to obtain local ip of device
             # doesn't even have to be reachable
@@ -79,23 +81,27 @@ class TimerServer():
     def startServer(self):
         self._bottleApp.run(host=self._host, port=self._port)
     def broadcastSelf(self):
-        broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        jsonFile = json.dumps(
-            ( 
-            self._roomName,
-            self._roomID,
-            ROOMDEVICES.MODEL_RPI
+        try:
+            broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            jsonFile = json.dumps(
+                ( 
+                self._roomName,
+                self._roomID,
+                ROOMDEVICES.MODEL_RPI
+                )
             )
-        )
-        byteSequence = bytes(jsonFile, 'utf-8') 
-        broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
-        broadcastSocket.close()
-        return 'forced broadcast'
+            byteSequence = bytes(jsonFile, 'utf-8') 
+            broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
+            broadcastSocket.close()
+        except Exception as e:
+            print("Broadcast failed!")
+            print(e)
     def broadcastContinous(self):
-        while(not self._linked):
+        self._shouldBroadcast = True
+        while(self._shouldBroadcast):
             self.broadcastSelf()
-            time.sleep(self.BROADCAST_REPEAT_PERIOD)
+            time.sleep(self._broadcastPeriod)
     def _who(self):
         return json.dumps(
             ( 
@@ -105,11 +111,11 @@ class TimerServer():
             )
         )
     def _link(self):
-        self._linked = True
-        return self._who()
+        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
     def _unlink(self):
-        self._linked = False
-        threading.Thread(target=self.broadcastContinous).start()
+        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
+    def stopBroadcast(self):
+        self._shouldBroadcast = False
     def _enable_cors(self):
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE'

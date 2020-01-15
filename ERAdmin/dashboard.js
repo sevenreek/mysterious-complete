@@ -60,9 +60,9 @@ $(function(){
 function appendDeviceFromJSON(jsonfile, ip)
 {
   devices.push(jsonfile.concat(ip));
-  var model = jsonfile[2];
   var deviceName = jsonfile[0];
   var deviceID = jsonfile[1];
+  var model = jsonfile[2];
   deviceIndexInDevicesArray = devices.length-1; // if the device exists load it into the devices array and add a card for it
   $('#connected-devices-list').append('\
     <div class="col-12 mb-2">\
@@ -70,7 +70,7 @@ function appendDeviceFromJSON(jsonfile, ip)
         <div class="card-body">\
           <div class="row no-gutters align-items-center">\
             <div class="col-xl-2 col-md-3 col-xs-6 align-items-center">\
-              <div class="h6 font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceName+'('+deviceID+')'+'</div>\
+              <div class="h6 font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceName+'('+deviceID.toString(16)+')'+'</div>\
               <div class="h4 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">21:38</div>\
               <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-times">##:##-##:##</div>\
             </div>\
