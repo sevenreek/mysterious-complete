@@ -24,19 +24,26 @@ class AF_HT16K33_7Seg(IDisplayController):
         pass
     def enableDisplay(self):
         pass
+    
     def setSeconds(self, totalSeconds):
-        if(totalSeconds > 0):
-            minutes = totalSeconds // 60
-            seconds = totalSeconds - minutes * 60
-            stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
-            print('\r'+stringToDisplay,end='')
-            self.display.print(stringToDisplay)
-            self.blink = False
-            self.display.blink_rate = 0
-        else:
-            self.display.print('00:00')
-            self.blink = True
-            self.display.blink_rate = 2
+        try:
+            if(totalSeconds > 0):
+                minutes = totalSeconds // 60
+                seconds = totalSeconds - minutes * 60
+                stringToDisplay = ( '%02d' % (minutes%100) ) + ':' + ( '%02d' % (seconds) )
+                print('\r'+stringToDisplay,end='')
+                self.display.print(stringToDisplay)
+                if(self.blink):
+                    self.display.blink_rate = 0
+                self.blink = False
+            else:
+                self.display.print('00:00')
+                if(not self.blink):
+                    self.display.blink_rate = 2
+                self.blink = True
+        except IOError as e:
+            print("Failed printing to display")
+            print(e)
     def setDisplayMode(self, mode):
         self.mode = mode
     def onTick(self, seconds, countingDown):

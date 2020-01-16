@@ -13,7 +13,7 @@ def main():
     gpio = GPIOController(roomController)
     dsp = None
     try:
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
         dsp = AF_HT16K33_7Seg(i2c)
     except:
         print("FAILED TO LOAD I2C DISPLAY! LOADING DEBUG CONSOLE DISPLAY!")
