@@ -96,9 +96,6 @@ class MainRoomController(RoomEventListener):
             elif(self.roomState == STATE_PAUSED): # resume game
                 self.timer.resume()
                 self.roomState = STATE_RUNNING
-            elif(self.roomState == STATE_RUNNING): # pause game
-                self.timer.pause()
-                self.roomState = STATE_PAUSED
         elif(roomEvent.value == RoomEvent.EVT_GPIO_PAUSE):     
             if(self.roomState == STATE_RUNNING): # pause game
                 self.timer.pause()
