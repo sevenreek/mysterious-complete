@@ -12,6 +12,24 @@ const ROOM_STATES = {
   STATE_STOPPED    : 3
 }
 var devices = [];
+
+$(function(){
+
+  window.setInterval(function(){
+    getRoomsState();
+  }, 1000);
+  
+});
+$( document ).ready(function() {
+  useAutomaticDeviceDetection = $("#use-auto-ip").is(":checked");
+  populateDeviceList(useAutomaticDeviceDetection);
+  $("#use-auto-ip").change(function()
+  {
+    useAutomaticDeviceDetection = this.checked;
+    dumpDeviceList();
+    populateDeviceList(useAutomaticDeviceDetection);
+  });
+});
 var getUrlParameter = function getUrlParameter(sParam) {
   var sPageURL = window.location.search.substring(1),
       sURLVariables = sPageURL.split('&'),
@@ -27,36 +45,29 @@ var getUrlParameter = function getUrlParameter(sParam) {
   }
   return null;
 };
-$(function(){
-
-  window.setInterval(function(){
-    getRoomsState();
-  }, 1000);
-
-  function getRoomsState(){
+function getRoomsState(){
    
-    for (deviceIndex = 0; deviceIndex < devices.length; deviceIndex++) // add all deviceIPs
-    {
-      (function(deviceIndex) {
-        $.ajax({
-          url : 'http://' + devices[deviceIndex][3] + ':' + devicesPort + '/timer/status',
-          cache : false,
-          dataType : "json",
-          crossDomain : true,
-          success : function(statusData){
-            updateRoomState(deviceIndex,statusData);
-          },
-          error: function (xhr, status, error) {
-            console.log("error:" + xhr.responseText);
-            $('#dev' + deviceIndex + '-primary').html('FAIL');
-          }
-        });
-      })(deviceIndex);
-    }
-    
+  for (deviceIndex = 0; deviceIndex < devices.length; deviceIndex++) // add all deviceIPs
+  {
+    (function(deviceIndex) {
+      $.ajax({
+        url : 'http://' + devices[deviceIndex][3] + ':' + devicesPort + '/timer/status',
+        cache : false,
+        dataType : "json",
+        crossDomain : true,
+        success : function(statusData){
+          updateRoomState(deviceIndex,statusData);
+        },
+        error: function (xhr, status, error) {
+          console.log("error:" + xhr.responseText);
+          $('#dev' + deviceIndex + '-primary').html('FAIL');
+        }
+      });
+    })(deviceIndex);
   }
+  
+}
 
-});
 function appendDeviceFromJSON(jsonfile, ip)
 {
   devices.push(jsonfile.concat(ip));
@@ -71,7 +82,7 @@ function appendDeviceFromJSON(jsonfile, ip)
           <div class="row no-gutters align-items-center">\
             <div class="col-xl-2 col-md-3 col-xs-6 align-items-center">\
               <div class="h6 font-weight-bold text-primary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-name">'+deviceName+'('+deviceID.toString(16)+')'+'</div>\
-              <div class="h4 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">21:38</div>\
+              <div class="h4 mb-0 font-weight-bold text-gray-800 my-1" id="dev'+deviceIndexInDevicesArray+'-primary">##:##</div>\
               <div class="text-xs font-weight-bold text-secondary text-uppercase " id="dev'+deviceIndexInDevicesArray+'-times">##:##-##:##</div>\
             </div>\
             <div class="col-xl-10 col-md-9 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">\
@@ -127,7 +138,7 @@ function appendDeviceFromJSON(jsonfile, ip)
   $('#dev"+deviceIndexInDevicesArray+"-btn-play').click({device: "+deviceIndexInDevicesArray+", command: '/timer/play'}, sendCommand);\
   $('#dev"+deviceIndexInDevicesArray+"-btn-pause').click({device: "+deviceIndexInDevicesArray+", command: '/timer/pause'}, sendCommand);\
   $('#dev"+deviceIndexInDevicesArray+"-btn-stop').click(function() {\
-    if(confirm('Zakończyć grę?\\nTej akcji nie da się cofnąć.')) sendCommandString(deviceIndexInDevicesArray,'/timer/stop');\
+    if(confirm('Zakończyć grę?\\nTej akcji nie da się cofnąć.')) sendCommandString("+deviceIndexInDevicesArray+",'/timer/stop');\
   });\
   $('#dev"+deviceIndexInDevicesArray+"-btn-reset').click(function() {\
     var secs = 60*parseInt($('#dev"+deviceIndexInDevicesArray+"-btn-reset-val').val());\
@@ -139,17 +150,8 @@ function appendDeviceFromJSON(jsonfile, ip)
   });\
   <\/script>");
 }
-$("#use-auto-ip").click(function()
-{
-  useAutomaticDeviceDetection = $("#use-auto-ip").is(":checked");
-  dumpDeviceList();
-  populateDeviceList(useAutomaticDeviceDetection);
-});
-$( document ).ready(function() {
-  useAutomaticDeviceDetection = $("#use-auto-ip").is(":checked");
-  populateDeviceList(useAutomaticDeviceDetection);
-  
-});
+
+
 function sendCommandString(devindex, str)
 {
   $.ajax({
