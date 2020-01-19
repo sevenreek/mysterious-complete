@@ -20,6 +20,7 @@ class GPIOController():
         GPIO.setup(CFG_PIN_PLAY, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(CFG_PIN_PAUSE, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(CFG_PIN_STOP_AND_RESET, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(CFG_PIN_ADD_TIME, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(CFG_PIN_START_ROOM, GPIO.OUT)
         GPIO.setup(CFG_PIN_ENTRANCE_OPEN, GPIO.OUT)
         GPIO.setup(CFG_PIN_EXIT_OPEN, GPIO.OUT)
