@@ -41,11 +41,11 @@ class GPIOController():
         GPIO.output(CFG_PIN_ENTRANCE_OPEN, not CFG_ENTRANCE_OPEN_VALUE)
     def lockExit(self):
         GPIO.output(CFG_PIN_EXIT_OPEN, not CFG_EXIT_OPEN_VALUE)
-    def onAddTimeBtn(self):
+    def onAddTimeBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_ADDTIME, CFG_ADD_TIME_VALUE))
-    def onPlayBtn(self):
+    def onPlayBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_PLAY))
-    def onResetBtn(self):
+    def onResetBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_STOPRESET, CFG_DEFAULT_TIME))
-    def onPauseBtn(self):
+    def onPauseBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_PAUSE))
