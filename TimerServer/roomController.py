@@ -18,7 +18,7 @@ class RoomEvent():
     EVT_GPIO_FINISHED   = 0xC000
     EVT_GPIO_PLAY       = 0xC001
     EVT_GPIO_PAUSE      = 0xC002
-    EVT_GPIO_STOP       = 0xC003
+    EVT_GPIO_STOPRESET  = 0xC003
     EVT_GPIO_ADDTIME    = 0xC004
     def __init__(self, value, data=None):
         self.value = value
@@ -103,8 +103,9 @@ class MainRoomController(RoomEventListener):
             if(self.roomState == STATE_RUNNING): # pause game
                 self.timer.pause()
                 self.roomState = STATE_PAUSED
-        elif(roomEvent.value == RoomEvent.EVT_GPIO_STOP):       
-            self.roomState = STATE_STOPPED
+        elif(roomEvent.value == RoomEvent.EVT_GPIO_STOPRESET):       
+            self.roomState = STATE_READY
+            self.timer.setSeconds(roomEvent.data)
             self.timer.pause()
             self.gpio.unlockEntrance()
             self.setUnactive()
