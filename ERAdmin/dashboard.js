@@ -60,7 +60,7 @@ function getRoomsState(){
         },
         error: function (xhr, status, error) {
           console.log("error:" + xhr.responseText);
-          $('#dev' + deviceIndex + '-primary').html('FAIL');
+          $('#dev' + deviceIndex + '-primary').html('TIMEOUT');
         }
       });
     })(deviceIndex);
