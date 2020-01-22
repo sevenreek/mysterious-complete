@@ -252,6 +252,8 @@ function updateRoomState(deviceIndex, statusData)
   switch(deviceState) {
     case ROOM_STATES.STATE_READY:
       $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').addClass('border-left-info');
       $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
       $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
@@ -271,6 +273,8 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
     break;
     case ROOM_STATES.STATE_PAUSED:
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-danger');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').addClass('border-left-warning');
       $("#dev" + deviceIndex + '-btn-play').prop("disabled", false);
@@ -279,9 +283,9 @@ function updateRoomState(deviceIndex, statusData)
       $("#dev" + deviceIndex + '-btn-play-text').html("Wznów");
     break;
     case ROOM_STATES.STATE_STOPPED:
-      $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-info');
       $("#dev" + deviceIndex + '-card').removeClass('border-left-warning');
+      $("#dev" + deviceIndex + '-card').removeClass('border-left-success');
       $("#dev" + deviceIndex + '-card').addClass('border-left-danger');
       $("#dev" + deviceIndex + '-btn-play').prop("disabled", true);
       $("#dev" + deviceIndex + '-btn-pause').prop("disabled", true);
