@@ -4,6 +4,9 @@ STATE_READY     = 0
 STATE_RUNNING   = 1
 STATE_PAUSED    = 2
 STATE_STOPPED   = 3
+
+# All events(RoomEvent) are passed to the roomcontroller which handles them calling appropriate public functions in gpio, display and timer.
+# The room controller holds the current GameState
 class RoomEventListener():
     def raiseEvent(self, event):
         pass
@@ -31,7 +34,7 @@ class GameState():
         self.startedon = timeStarted
         enddate = datetime.datetime.now() + datetime.timedelta(0,timeLeft)
         self.expecetedend = "{:02d}:{:02d}".format(enddate.hour,enddate.minute)
-class MainRoomController(RoomEventListener):
+class MainRoomController(RoomEventListener): 
     def __init__(self, server = None, timer = None, gpio = None):
         self.server = server
         self.timer = timer
@@ -39,7 +42,7 @@ class MainRoomController(RoomEventListener):
         self.roomState = STATE_READY
         self.gameActive = False
         self.timeStarted = None
-    def initialize(self, server = None, timer = None, gpio = None):
+    def initialize(self, server = None, timer = None, gpio = None): # due to the circular dependency this function must be called after creating all other controllers
         if(server is not None):
             self.server = server
         if(timer is not None):
@@ -113,7 +116,7 @@ class MainRoomController(RoomEventListener):
         return self._onEvent(roomEvent)
     def getState(self):
         return GameState(self.roomState, self.gameActive, self.timer.secondsRemaining, self.timeStarted)
-    def setActive(self):
+    def setActive(self): # the room state can be stopped or ready which means the a game in the room is not in progress and the room is not "active"
         self.gameActive = True
         self.timeStarted = "{:02d}:{:02d}".format(datetime.datetime.now().hour, datetime.datetime.now().minute)
     def setUnactive(self):
