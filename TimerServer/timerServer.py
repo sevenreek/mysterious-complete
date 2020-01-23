@@ -5,7 +5,7 @@ import time
 import threading
 import socket
 import json
-from logger impor Logger
+from logger import Logger
 class TimerServer():
     BROADCAST_REPEAT_PERIOD_UNLINKED = 5
     BROADCAST_REPEAT_PERIOD_LINKED = 60
