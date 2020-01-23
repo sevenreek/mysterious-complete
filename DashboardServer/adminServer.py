@@ -5,6 +5,7 @@ import threading
 import json
 from socket import socket, AF_INET, SOCK_DGRAM
 import requests
+from logger import Logger, CFG_LOGS_DIR, CFG_LOGS_DAYS_ARCHIVE_SIZE
 UDP_BUFFER_SIZE = 512
 UDP_MESSAGE_LINE_COUNT = 3
 class DeviceDetectorServer():
@@ -36,11 +37,11 @@ class DeviceDetectorServer():
                 print("New UDP received:")
                 print(message)
                 deviceData = json.loads(message)
-                if((deviceData[1] & 0xDE00) == 0xDE00):
-                # maybe check if id is acceptable or something               
+                if((deviceData[1] & 0xDE00) == 0xDE00):            
                     if(deviceIP in self._devicesIPs):
                         print('Device already known')
                     else:
+                        Logger.glog("Found new device: " + str(deviceIP))
                         print('New device recognized: ' + str(deviceIP))
                         print('Linking...')
                         requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link') 
@@ -58,10 +59,6 @@ class DeviceDetectorServer():
         self._detectBroadcasts = False
     def _list(self):
         json_out = json.dumps(self._devicesIPs)
-        #response = str(len(self._unlinkedDevicesIPs)) + '\n'
-        #for ip in self._unlinkedDevicesIPs: # append all unlinked ips to string
-        #    response = response + ip + '\n'
-        #return response[:-1] # strip last \n
         print(json_out)
         return json_out
     def _index(self):
@@ -75,6 +72,8 @@ class DeviceDetectorServer():
         response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 if __name__ == "__main__":
     devices = []
+    l = Logger(CFG_LOGS_DIR, CFG_LOGS_DAYS_ARCHIVE_SIZE)
+    l.makeGlobal
     server = DeviceDetectorServer(devices, 'localhost', 8080, 4000)
     server.startThreadedDetect()
     server.startCommunicationServer()

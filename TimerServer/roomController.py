@@ -66,7 +66,7 @@ class MainRoomController(RoomEventListener):
             self.gpio = gpio
     def _onEvent(self, roomEvent):
         try:
-            Logger.glog("Received event: {0} {1}".format(RoomEvent.namedict[roomEvent.value], str(roomEvent.data)))
+            Logger.glog("Received event: {0}; data: {1}".format(RoomEvent.namedict[roomEvent.value], str(roomEvent.data)))
         except Exception as e:
             print("Logging failed")
             print(str(e))
