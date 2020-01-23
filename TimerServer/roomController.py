@@ -1,4 +1,5 @@
 from CONFIGURATION import CFG_DEFAULT_TIME
+from logger import Logger
 import datetime
 STATE_READY     = 0
 STATE_RUNNING   = 1
@@ -50,6 +51,7 @@ class MainRoomController(RoomEventListener):
         if(gpio is not None):
             self.gpio = gpio
     def _onEvent(self, roomEvent):
+        Logger.glog("Received event: {0}".format(roomEvent.__dict__))
         # BEGIN SERVER EVENTS
         if(roomEvent.value == RoomEvent.EVT_SERVER_PLAY):
             if(self.roomState == STATE_READY): # start game

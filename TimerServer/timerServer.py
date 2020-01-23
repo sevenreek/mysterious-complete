@@ -5,6 +5,7 @@ import time
 import threading
 import socket
 import json
+from logger impor Logger
 class TimerServer():
     BROADCAST_REPEAT_PERIOD_UNLINKED = 5
     BROADCAST_REPEAT_PERIOD_LINKED = 60
@@ -29,6 +30,7 @@ class TimerServer():
             s.close()
         self._bottleApp = Bottle()
         self._route()
+        Logger.glog("Server initialized.")
     def _route(self):
         self._bottleApp.route('/timer/status', method="GET", callback=self._status)
         self._bottleApp.route('/timer/pause', method="GET", callback=self._pause)
@@ -47,14 +49,18 @@ class TimerServer():
         return jsonf
     def _pause(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PAUSE))
+        Logger.glog("Received pause request.")
         return self._status()
     def _play(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PLAY))
+        Logger.glog("Received play request.")
         return self._status()
     def _stop(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_STOP))
+        Logger.glog("Received stop request.")
         return self._status()
     def _set(self):
+        Logger.glog("Received set request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_SETTIME, seconds))
@@ -63,6 +69,7 @@ class TimerServer():
             return self._status() 
         return self._status()
     def _add(self):
+        Logger.glog("Received add request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_ADDTIME, seconds))
@@ -71,6 +78,7 @@ class TimerServer():
             print(e)
             return self._status()
     def _reset(self):
+        Logger.glog("Received reset request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_RESET, seconds))
@@ -79,6 +87,7 @@ class TimerServer():
             print(e)
             return self._status()
     def startServer(self):
+        Logger.glog("Starting server.")
         self._bottleApp.run(host=self._host, port=self._port)
     def broadcastSelf(self):
         try:
@@ -98,11 +107,13 @@ class TimerServer():
             print("Broadcast failed!")
             print(e)
     def broadcastContinous(self):
+        Logger.glog("Starting UDP broadcasting.")
         self._shouldBroadcast = True
         while(self._shouldBroadcast):
             self.broadcastSelf()
             time.sleep(self._broadcastPeriod)
     def _who(self):
+        Logger.glog("Received /who.")
         return json.dumps(
             ( 
             self._roomName,
@@ -111,6 +122,7 @@ class TimerServer():
             )
         )
     def _link(self):
+        Logger.glog("Linked.")
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
     def _unlink(self):
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
