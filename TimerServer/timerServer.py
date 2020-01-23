@@ -91,7 +91,7 @@ class TimerServer():
             return self._status()
     def _servelog(self, filepath=datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT)):
         print("serving log file")
-        return static_file(filepath, CFG_LOGS_DIR) 
+        return static_file(filepath, Logger.instance.logsDirectory) 
     def startServer(self):
         Logger.glog("Starting server.")
         self._bottleApp.run(host=self._host, port=self._port)
