@@ -44,6 +44,7 @@ class TimerServer():
         self._bottleApp.route('/link', method="GET", callback=self._link)
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
         self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
+        self._bottleApp.route('/logs', method="GET", callback=self._servelog)
         self._bottleApp.route('/broadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
