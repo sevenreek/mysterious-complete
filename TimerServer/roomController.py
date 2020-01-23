@@ -25,18 +25,18 @@ class RoomEvent():
     EVT_GPIO_STOPRESET  = 0xC003
     EVT_GPIO_ADDTIME    = 0xC004
     namedict = {
-        0xA000 : EVT_SERVER_PLAY     ,
-        0xA001 : EVT_SERVER_PAUSE    ,
-        0xA002 : EVT_SERVER_SETTIME  ,
-        0xA003 : EVT_SERVER_ADDTIME  ,
-        0xA004 : EVT_SERVER_STOP     ,
-        0xA005 : EVT_SERVER_RESET    ,
-        0xB000 : EVT_TIMER_HITZERO   ,
-        0xC000 : EVT_GPIO_FINISHED   ,
-        0xC001 : EVT_GPIO_PLAY       ,
-        0xC002 : EVT_GPIO_PAUSE      ,
-        0xC003 : EVT_GPIO_STOPRESET  ,
-        0xC004 : EVT_GPIO_ADDTIME    
+        0xA000 : 'EVT_SERVER_PLAY'     ,
+        0xA001 : 'EVT_SERVER_PAUSE'    ,
+        0xA002 : 'EVT_SERVER_SETTIME'  ,
+        0xA003 : 'EVT_SERVER_ADDTIME'  ,
+        0xA004 : 'EVT_SERVER_STOP'     ,
+        0xA005 : 'EVT_SERVER_RESET'    ,
+        0xB000 : 'EVT_TIMER_HITZERO'   ,
+        0xC000 : 'EVT_GPIO_FINISHED'   ,
+        0xC001 : 'EVT_GPIO_PLAY'       ,
+        0xC002 : 'EVT_GPIO_PAUSE'      ,
+        0xC003 : 'EVT_GPIO_STOPRESET'  ,
+        0xC004 : 'EVT_GPIO_ADDTIME'    
     }
     def __init__(self, value, data=None):
         self.value = value
