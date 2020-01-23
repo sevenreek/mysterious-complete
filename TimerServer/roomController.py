@@ -65,7 +65,11 @@ class MainRoomController(RoomEventListener):
         if(gpio is not None):
             self.gpio = gpio
     def _onEvent(self, roomEvent):
-        Logger.glog("Received event: {0} {1}".format(RoomEvent.namedict[roomEvent.value], roomEvent.data.__dict__))
+        try:
+            Logger.glog("Received event: {0} {1}".format(RoomEvent.namedict[roomEvent.value], str(roomEvent.data)))
+        except Exception as e:
+            print("Logging failed")
+            print(str(e))
         # BEGIN SERVER EVENTS
         if(roomEvent.value == RoomEvent.EVT_SERVER_PLAY):
             if(self.roomState == STATE_READY): # start game
