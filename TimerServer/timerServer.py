@@ -90,6 +90,7 @@ class TimerServer():
             print(e)
             return self._status()
     def _servelog(self, filepath=datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT)):
+        print("serving log file")
         return static_file(filepath, CFG_LOGS_DIR) 
     def startServer(self):
         Logger.glog("Starting server.")
