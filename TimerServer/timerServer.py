@@ -1,7 +1,9 @@
-from bottle import Bottle, route, run, template, request, response
+from bottle import Bottle, route, run, template, request, response, static_file
 from roomdevices import ROOMDEVICES
 from roomController import RoomEvent
+from CONFIGURATION import CFG_LOGS_DIR, CFG_LOGS_DATE_FORMAT
 import time
+import datetime
 import threading
 import socket
 import json
@@ -41,6 +43,7 @@ class TimerServer():
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/link', method="GET", callback=self._link)
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
+        self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
         self._bottleApp.route('/broadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
@@ -86,6 +89,8 @@ class TimerServer():
         except (ValueError, TypeError) as e:
             print(e)
             return self._status()
+    def _servelog(self, filepath=datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT)):
+        return static_file(filepath, CFG_LOGS_DIR) 
     def startServer(self):
         Logger.glog("Starting server.")
         self._bottleApp.run(host=self._host, port=self._port)
