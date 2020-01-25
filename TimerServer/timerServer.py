@@ -28,7 +28,8 @@ class TimerServer():
             s.connect(('10.255.255.255', 1))
             self._deviceIP = s.getsockname()[0]
             splitIP = self._deviceIP.split('.')
-            self._broadcastIP = splitIP[0] + '.' + splitIP[1] + '.255.255'
+            #self._broadcastIP = splitIP[0] + '.' + splitIP[1] + '.255.255'
+            self._broadcastIP = '<broadcast>'
             print("Running on IP: " + self._deviceIP)
             print("Broadcasting on IP: " + self._broadcastIP)
         except:
