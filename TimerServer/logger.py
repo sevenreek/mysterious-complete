@@ -9,7 +9,10 @@ class Logger():
         self.logsDirectory = self.scriptDirectory + '/' + logsDir
         print(self.logsDirectory)
         if not os.path.exists(self.logsDirectory):
-            os.makedirs(self.logsDirectory)
+            try:
+                os.makedirs(self.logsDirectory)
+            except PermissionError as e:
+                print(str(e))
         self.cleanLogsDirectory(self.logsDirectory, archiveSizeDays)
     def cleanLogsDirectory(self, dir, olderThanDays, dateFrom = datetime.date.today()):
         files = os.listdir(dir)
@@ -24,8 +27,11 @@ class Logger():
                 self.log("Arrived at an unexpected file in /logs or file could not be removed.")
                 self.log(e)
     def log(self, msg):
-        with open(self.logsDirectory + '/' + datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT),"a+") as f:
-            f.write(datetime.datetime.now().strftime(CFG_LOGS_TIME_FORMAT) + str(msg) + '\n')
+        try:
+            with open(self.logsDirectory + '/' + datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT),"a+") as f:
+                f.write(datetime.datetime.now().strftime(CFG_LOGS_TIME_FORMAT) + str(msg) + '\n')
+        except PermissionError as e:
+            print(str(e))
     @staticmethod
     def glog(msg): # global log
         if(Logger.instance is not None):
