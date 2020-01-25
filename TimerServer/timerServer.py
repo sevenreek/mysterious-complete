@@ -26,6 +26,7 @@ class TimerServer():
             # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
             self._deviceIP = s.getsockname()[0]
+            print("Running on IP: "+self._deviceIP)
         except:
             self._deviceIP = '127.0.0.1'
         finally:
