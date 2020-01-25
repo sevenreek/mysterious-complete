@@ -21,12 +21,16 @@ class TimerServer():
         self.roomctrl = roomController
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
         self._shouldBroadcast = False
+        self._broadcastIP = '255.255.255.255'
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try: # try to obtain local ip of device
             # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
             self._deviceIP = s.getsockname()[0]
-            print("Running on IP: "+self._deviceIP)
+            splitIP = self._deviceIP.split('.')
+            self._broadcastIP = splitIP[0] + '.' + splitIP[1] + '.255.255'
+            print("Running on IP: " + self._deviceIP)
+            print("Broadcasting on IP: " + self._broadcastIP)
         except:
             self._deviceIP = '127.0.0.1'
         finally:
@@ -109,7 +113,7 @@ class TimerServer():
                 )
             )
             byteSequence = bytes(jsonFile, 'utf-8') 
-            broadcastSocket.sendto( byteSequence, ('255.255.255.255', self._broadcastPort) )
+            broadcastSocket.sendto( byteSequence, (self._broadcastIP, self._broadcastPort) )
             broadcastSocket.close()
         except Exception as e:
             print("Broadcast failed!")
