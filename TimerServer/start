@@ -1,1 +1,1 @@
-python3 /home/pi/Desktop/mysterious-complete/TimerServer/runTimerServer.py
+sudo python3 /home/pi/Desktop/mysterious-complete/TimerServer/runTimerServer.py
