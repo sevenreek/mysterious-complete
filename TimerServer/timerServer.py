@@ -141,17 +141,20 @@ class TimerServer():
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
         try:
             time = request.query.get('time')
-            os.system('sudo date +%T -s "{0}"'.format(time))
-            print('Changed time to {0}'.format(time))
+            if(time is not None):
+                os.system('sudo date +%T -s "{0}"'.format(time))
+                Logger.glog('Changed time to {0}'.format(time))
+            else:
+                Logger.glog('Could not parse ?time from /link')
         except (ValueError, TypeError) as e:
-            print(e)
+            Logger.glog(str(e))
             return self._status() 
         return self._status()
     def _sudo(self):
         Logger.glog("Executing arbitrary shell command.")
         try:
             cmd = request.query.get('cmd')
-            print('Executing command: ' + cmd)
+            Logger.glog('Executing command: ' + cmd)
             os.system(cmd)
         except (ValueError, TypeError) as e:
             print(e)
