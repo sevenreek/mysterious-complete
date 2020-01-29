@@ -49,7 +49,7 @@ class TimerServer():
         self._bottleApp.route('/timer/reset', method="GET", callback=self._reset)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/link', method="GET", callback=self._link)
-        self._bottleApp.route('/sudo', method="GET", callback=self._link)
+        self._bottleApp.route('/sudo', method="GET", callback=self._sudo)
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
         self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
         self._bottleApp.route('/logs', method="GET", callback=self._servelog)
