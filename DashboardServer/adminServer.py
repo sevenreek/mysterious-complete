@@ -6,6 +6,7 @@ import json
 from socket import socket, AF_INET, SOCK_DGRAM
 import requests
 from logger import Logger, CFG_LOGS_DIR, CFG_LOGS_DAYS_ARCHIVE_SIZE
+import datetime
 UDP_BUFFER_SIZE = 512
 UDP_MESSAGE_LINE_COUNT = 3
 class DeviceDetectorServer():
@@ -44,7 +45,7 @@ class DeviceDetectorServer():
                         Logger.glog("Found new device: " + str(deviceIP))
                         print('New device recognized: ' + str(deviceIP))
                         print('Linking...')
-                        requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link') 
+                        requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link?time=' + datetime.datetime.now().strftime('%T')) 
                         self._devicesIPs.append(deviceIP)
             except Exception as e:
                 print('Error while processing UDP broadcast.')

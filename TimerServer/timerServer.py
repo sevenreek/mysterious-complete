@@ -7,6 +7,7 @@ import datetime
 import threading
 import socket
 import json
+import os
 from logger import Logger
 class TimerServer():
     BROADCAST_REPEAT_PERIOD_UNLINKED = 5
@@ -48,6 +49,7 @@ class TimerServer():
         self._bottleApp.route('/timer/reset', method="GET", callback=self._reset)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/link', method="GET", callback=self._link)
+        self._bottleApp.route('/sudo', method="GET", callback=self._link)
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
         self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
         self._bottleApp.route('/logs', method="GET", callback=self._servelog)
@@ -137,6 +139,25 @@ class TimerServer():
     def _link(self):
         Logger.glog("Linked.")
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
+        try:
+            time = request.query.get('time')
+            os.system('sudo date +%T -s "{0}"'.format(time))
+            print('Changed time to {0}'.format(time))
+        except (ValueError, TypeError) as e:
+            print(e)
+            return self._status() 
+        return self._status()
+    def _sudo(self):
+        Logger.glog("Executing arbitrary shell command.")
+        try:
+            cmd = request.query.get('cmd')
+            print('Executing command: ' + cmd)
+            os.system(cmd)
+        except (ValueError, TypeError) as e:
+            print(e)
+            return self._status() 
+        return self._status()
+        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED    
     def _unlink(self):
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
     def stopBroadcast(self):
