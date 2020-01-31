@@ -21,7 +21,7 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
   <link href="css/sb-admin-2-user.css" rel="stylesheet">
-  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  <link href="css/bootstrap4-toggle.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -98,11 +98,21 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          Aktywne Pokoje
+          <span>Stan połączeń:</span>
+          
+          
           
           
 
             <div class="topbar-divider d-none d-sm-block"></div>
+            <div id = "connection-container">
+              <i class="fas fa-check-circle text-success mr-05" data-toggle="tooltip" data-placement="bottom" title="Połączony"></i>
+              <i class="fas fa-check-circle text-success mr-05" data-toggle="tooltip" data-placement="bottom" title="Połączony"></i>
+              <i class="fas fa-check-circle text-success mr-05" data-toggle="tooltip" data-placement="bottom" title="Połączony"></i>
+              <i class="fas fa-check-circle text-success mr-05" data-toggle="tooltip" data-placement="bottom" title="Połączony"></i>
+              <i class="fas fa-exclamation-circle text-danger mr-05" data-toggle="tooltip" data-placement="bottom" title="Brak połączenia"></i>
+              <i class="fas fa-exclamation-circle text-danger mr-05" data-toggle="tooltip" data-placement="bottom" title="Brak połączenia"></i>
+            </div>
             <div style="margin-left:auto; margin-right:0;">
               <span class="mr-3">Konfiguracja IP:</span><input type="checkbox" data-toggle="toggle" data-style="ios" data-on="Dynamiczna" data-off="Statyczna" checked id="use-auto-ip">
             </div>
@@ -154,7 +164,7 @@
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
   <script src="dashboard.js"></script>
-  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <script src="js/bootstrap4-toggle.min.js"></script>
 
 </body>
 

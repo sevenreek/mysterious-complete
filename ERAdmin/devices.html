@@ -20,7 +20,7 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
   <link href="css/sb-admin-2-user.css" rel="stylesheet">
-
+  <link href="css/bootstrap4-toggle.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -102,7 +102,11 @@
          
 
             <div class="topbar-divider d-none d-sm-block"></div>
-
+            <div style="margin-left:auto; margin-right:0;">
+              <span class="mr-3">Konfiguracja IP:</span><input type="checkbox" data-toggle="toggle" data-style="ios" data-on="Dynamiczna" data-off="Statyczna" checked id="use-auto-ip">
+              <i class="fas fa-exclamation-circle text-danger"></i>
+              <i class="fas fa-check-circle text-success"></i>
+            </div>
         </nav>
         <!-- End of Topbar -->
 
@@ -111,134 +115,36 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Ręczna konfiguracja:</h1>
+            <h1 class="h3 mb-0 text-gray-800">Polecenia globalne:</h1>
             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-redo-alt fa-sm text-white-50"></i> Refresh</a>
           </div>
 
           <!-- Content Row -->
           <div class="row" id="connected_row">
 
+           
             <!-- Room Overview Card -->
-            <div class="col-xl-6 col-md-12 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body col-s-12">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col-lg-4">
-                      <div class="text-md font-weight-bold text-primary text-uppercase" id="cd0-name">ROOM #1</div>
-                      <div class="text-sm font-weight-bold text-secondary text-uppercase" id="cd0-id">0xDE00</div>
-                      <div class="text-sm font-weight-bold text-success text-info" id="cd0-ip">190.168.0.190</div>
-                    </div>
-                    <div class="col-lg-8 col-s-12">
-                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
-                        <input type="text" class="form-control input-lg text-center h-100 d-inline-block" style="width:8em;" id="dev'+deviceIndexInDevicesArray+'-btn-reset-val" >
-                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-font"></i>
-                          </span>
-                          <span class="text">Zmień nazwę pokoju</span>
-                        </button>
-                      </div>
-                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
-                        <input type="text" class="form-control input-lg text-center h-100 d-inline-block" style="width:8em;" id="dev'+deviceIndexInDevicesArray+'-btn-reset-val" >
-                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-clipboard-list"></i>
-                          </span>
-                          <span class="text">Wyświetl logi</span>
-                        </button>
-                      </div>
-                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
-                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev'+deviceIndexInDevicesArray+'-btn-reset-val" value="60">
-                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-redo "></i>
-                          </span>
-                          <span class="text">Ustaw domyślny reset</span>
-                        </button>
-                      </div>
-                      <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
-                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev'+deviceIndexInDevicesArray+'-btn-reset-val" value="7">
-                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                          <span class="icon text-white-50">
-                            <i class="fas fa-archive"></i>
-                          </span>
-                          <span class="text">Ustaw wielkość archiwum</span>
-                        </button>
-                      </div>
-                      <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-calendar-check"></i>
-                        </span>
-                        <span class="text">Synchronizuj datę i czas</span>
-                      </button>
-                      <button href="#" class="btn btn-warning btn-icon-split d-inline-block mb-1" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-power-off"></i>
-                        </span>
-                        <span class="text">Restartuj urządzenie</span>
-                      </button>
-                      <button href="#" class="btn btn-danger btn-icon-split d-inline-block mb-1" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-power-off"></i>
-                        </span>
-                        <span class="text">Wyłącz urządzenie</span>
-                      </button>
-                      <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="dev'+deviceIndexInDevicesArray+'-btn-reset">
-                        <span class="icon text-white-50">
-                          <i class="fas fa-keyboard"></i>
-                        </span>
-                        <span class="text">Wprowadź zdalny skrypt</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Room Overview Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-8">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #2</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">09:48</div>
-                    </div>
-                    <div class="col-auto">
-                      <a href="#"><i class="fas fa-ban fa-2x"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Room Overview Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #3</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">60:00</div>
-                    </div>
-                    <div class="col-auto">
-                      <a href="#"><i class="fas fa-ban fa-2x"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Room Overview Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #4</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">60:00</div>
-                    </div>
-                    <div class="col-auto">
-                      <a href="#"><i class="fas fa-ban fa-2x text-red-300"></i></a>
-                    </div>
-                  </div>
+                  <button href="#" class="btn btn-warning btn-icon-split d-inline-block mb-1" id="global-reboot">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-power-off"></i>
+                    </span>
+                    <span class="text">Restartuj wszystkie</span>
+                  </button>
+                  <button href="#" class="btn btn-danger btn-icon-split d-inline-block mb-1" id="global-shutdown">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-power-off"></i>
+                    </span>
+                    <span class="text">Wyłącz wszystkie</span>
+                  </button>
+                  <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="global-sync">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-calendar-check"></i>
+                    </span>
+                    <span class="text">Synchronizuj czas wszystkich</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -246,76 +152,62 @@
           </div>
           <!-- Content Row -->
 
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Automatyczna konfiguracja: <span id="devices_foundcount"></span></h1>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+            <h1 class="h3 mb-0 text-gray-800">Polecenia szczególne: <span id="devices_foundcount"></span></h1>
           </div>
 
             <div class="row">
+               <!-- Room Overview Card -->
+              <div class="col-xl-8 col-md-12 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body col-s-12">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col-lg-4">
+                        <div class="form-group mr-4">
+                          <label for="sel1">Wybierz pokój:</label>
+                          <select class="form-control" id="devices-sel">
+                            <!--<option>ROOM 1 (DE00)</option>-->
 
-              <!-- Room Overview Card -->
-              <div class="col-xl-6 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #1</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">15:48</div>
+                          </select>
+                        </div>
+                        <div class="text-md font-weight-bold text-primary text-uppercase" id="cdev-name">...</div>
+                        <div class="text-sm font-weight-bold text-secondary text-uppercase" id="cdev-id">...</div>
+                        <div class="text-sm font-weight-bold text-success text-info" id="cdev-ip">...</div>
                       </div>
-                      <div class="col-auto">
-                        <a href="#"><i class="fas fa-plus-circle fa-2x"></i></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Room Overview Card -->
-              <div class="col-xl-6 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #2</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">09:48</div>
-                      </div>
-                      <div class="col-auto">
-                        <a href="#"><i class="fas fa-plus-circle fa-2x"></i></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Room Overview Card -->
-              <div class="col-xl-6 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #3</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">60:00</div>
-                      </div>
-                      <div class="col-auto">
-                        <a href="#"><i class="fas fa-plus-circle fa-2x"></i></a>
+                      <div class="col-lg-8 col-s-12">
+                        <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                          <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="cdev-btn-setdeftime-val" value="60">
+                          <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="cdev-btn-setdeftime">
+                            <span class="icon text-white-50">
+                              <i class="fas fa-redo "></i>
+                            </span>
+                            <span class="text">Ustaw domyślny reset</span>
+                          </button>
+                        </div>
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="cdev-btn-sync">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-calendar-check"></i>
+                          </span>
+                          <span class="text">Synchronizuj datę i czas</span>
+                        </button>
+                        <button href="#" class="btn btn-warning btn-icon-split d-inline-block mb-1" id="cdev-btn-reboot">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-power-off"></i>
+                          </span>
+                          <span class="text">Restartuj urządzenie</span>
+                        </button>
+                        <button href="#" class="btn btn-danger btn-icon-split d-inline-block mb-1" id="cdev-btn-shutdown">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-power-off"></i>
+                          </span>
+                          <span class="text">Wyłącz urządzenie</span>
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- Room Overview Card -->
-              <div class="col-xl-6 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">ROOM #4</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">60:00</div>
-                      </div>
-                      <div class="col-auto">
-                        <a href="#"><i class="fas fa-plus-circle fa-2x"></i></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+             
             
             </div>
 
@@ -346,7 +238,7 @@
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
   <script src="devices.js"></script>
-
+  <script src="js/bootstrap4-toggle.min.js"></script>
 
 
 </body>

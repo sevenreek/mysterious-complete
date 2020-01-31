@@ -2,7 +2,7 @@ function pad3(num, size){ return ('000' + num).substr(-size); }
 //var deviceIPs = ["192.168.0.145", "192.168.0.177"]; // probably load from cookies
 var useAutomaticDeviceDetection = true;
 var staticDeviceIPs = ["192.168.0.107","192.168.0.187","192.168.0.190"]; // probably load from cookies
-var dynamicDeviceIPs = []
+var dynamicDeviceIPs = [];
 var devicesPort = 8080;
 
 const ROOM_STATES = {
@@ -20,15 +20,17 @@ $(function(){
   }, 1000);
   
 });
+$('[data-toggle="tooltip"]').tooltip();
+$("#use-auto-ip").change(function()
+{
+  useAutomaticDeviceDetection = this.checked;
+  dumpDeviceList();
+  populateDeviceList(useAutomaticDeviceDetection);
+});
 $( document ).ready(function() {
   useAutomaticDeviceDetection = $("#use-auto-ip").is(":checked");
   populateDeviceList(useAutomaticDeviceDetection);
-  $("#use-auto-ip").change(function()
-  {
-    useAutomaticDeviceDetection = this.checked;
-    dumpDeviceList();
-    populateDeviceList(useAutomaticDeviceDetection);
-  });
+  
 });
 var getUrlParameter = function getUrlParameter(sParam) {
   var sPageURL = window.location.search.substring(1),

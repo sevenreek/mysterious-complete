@@ -45,7 +45,7 @@ class DeviceDetectorServer():
                         Logger.glog("Found new device: " + str(deviceIP))
                         print('New device recognized: ' + str(deviceIP))
                         print('Linking...')
-                        requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link?time=' + datetime.datetime.now().strftime('%T')) 
+                        requests.get(url = 'http://' + str(deviceIP) + ':' + str(self._port) + '/link?time=' + datetime.datetime.now().strftime('%R')) 
                         self._devicesIPs.append(deviceIP)
             except Exception as e:
                 print('Error while processing UDP broadcast.')

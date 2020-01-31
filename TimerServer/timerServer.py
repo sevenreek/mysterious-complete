@@ -49,6 +49,8 @@ class TimerServer():
         self._bottleApp.route('/timer/reset', method="GET", callback=self._reset)
         self._bottleApp.route('/timer/add', method="GET", callback=self._add)
         self._bottleApp.route('/link', method="GET", callback=self._link)
+        self._bottleApp.route('/reboot', method="GET", callback=self._reboot)
+        self._bottleApp.route('/shutdown', method="GET", callback=self._shutdown)
         self._bottleApp.route('/sudo', method="GET", callback=self._sudo)
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
         self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
@@ -142,7 +144,7 @@ class TimerServer():
         try:
             time = request.query.get('time')
             if(time is not None):
-                os.system('sudo date +%T -s "{0}"'.format(time))
+                os.system('sudo date +%R -s "{0}"'.format(time))
                 Logger.glog('Changed time to {0}'.format(time))
             else:
                 Logger.glog('Could not parse ?time from /link')
@@ -159,8 +161,21 @@ class TimerServer():
         except (ValueError, TypeError) as e:
             print(e)
             return self._status() 
+        return self._status()  
+    def _reboot(self):
+        Logger.glog("Rebooting device.")
+        try:
+            os.system("sudo reboot")
+        except Exception as e:
+            print(e)
         return self._status()
-        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED    
+    def _shutdown(self):
+        Logger.glog("Shutting device down in 1 minute.")
+        try:
+            os.system("sudo shutdown -h 1")
+        except Exception as e:
+            print(e)
+        return self._status()
     def _unlink(self):
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
     def stopBroadcast(self):
