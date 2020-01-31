@@ -115,8 +115,9 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Polecenia globalne:</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-redo-alt fa-sm text-white-50"></i> Refresh</a>
+            
+            
+           
           </div>
 
           <!-- Content Row -->
@@ -125,21 +126,27 @@
            
             <!-- Room Overview Card -->
             <div class="col-xl-8">
-              <div class="card border-left-primary shadow h-100 py-2">
+              <div class="card border-left-primary shadow h-100 py-2 mb-2">
+                <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
+                  <h5 class="m-0 font-weight-bold text-primary">Polecenia globalne</h5>
+                  <input type="checkbox" data-toggle="toggle" data-style="ios" data-on="Zezwolone" data-off="Zablokowane" id="unlock-globals">
+                </div>
                 <div class="card-body">
-                  <button href="#" class="btn btn-warning btn-icon-split d-inline-block mb-1" id="global-reboot">
+                  
+                 
+                  <button href="#" class="btn btn-warning btn-icon-split d-inline-block mb-1" id="global-reboot" disabled>
                     <span class="icon text-white-50">
                       <i class="fas fa-power-off"></i>
                     </span>
                     <span class="text">Restartuj wszystkie</span>
                   </button>
-                  <button href="#" class="btn btn-danger btn-icon-split d-inline-block mb-1" id="global-shutdown">
+                  <button href="#" class="btn btn-danger btn-icon-split d-inline-block mb-1" id="global-shutdown" disabled>
                     <span class="icon text-white-50">
                       <i class="fas fa-power-off"></i>
                     </span>
-                    <span class="text">Wyłącz wszystkie</span>
+                    <span class="text">Wyłącz wszystkie (60s)</span>
                   </button>
-                  <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="global-sync">
+                  <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="global-sync" disabled>
                     <span class="icon text-white-50">
                       <i class="fas fa-calendar-check"></i>
                     </span>
@@ -152,30 +159,30 @@
           </div>
           <!-- Content Row -->
 
-          <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-            <h1 class="h3 mb-0 text-gray-800">Polecenia szczególne: <span id="devices_foundcount"></span></h1>
-          </div>
 
             <div class="row">
                <!-- Room Overview Card -->
               <div class="col-xl-8 col-md-12 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card border-left-primary shadow h-100 py-2 mt-2">
+                  <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
+                    <h5 class="m-0 font-weight-bold text-primary">Polecenia szczególne</h5>
+                  </div>
                   <div class="card-body col-s-12">
                     <div class="row no-gutters align-items-center">
                       <div class="col-lg-4">
                         <div class="form-group mr-4">
-                          <label for="sel1">Wybierz pokój:</label>
-                          <select class="form-control" id="devices-sel">
+                          
+                          <select class="form-control text-md font-weight-bold text-primary text-uppercase" id="devices-sel">
                             <!--<option>ROOM 1 (DE00)</option>-->
 
                           </select>
                         </div>
-                        <div class="text-md font-weight-bold text-primary text-uppercase" id="cdev-name">...</div>
-                        <div class="text-sm font-weight-bold text-secondary text-uppercase" id="cdev-id">...</div>
-                        <div class="text-sm font-weight-bold text-success text-info" id="cdev-ip">...</div>
+                        
+                        <div class="text-sm font-weight-bold text-secondary text-uppercase ml-3" id="cdev-id">...</div>
+                        <div class="text-sm font-weight-bold text-success text-info ml-3" id="cdev-ip">...</div>
                       </div>
                       <div class="col-lg-8 col-s-12">
-                        <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <!--<div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
                           <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="cdev-btn-setdeftime-val" value="60">
                           <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="cdev-btn-setdeftime">
                             <span class="icon text-white-50">
@@ -183,7 +190,7 @@
                             </span>
                             <span class="text">Ustaw domyślny reset</span>
                           </button>
-                        </div>
+                        </div>-->
                         <button href="#" class="btn btn-info btn-icon-split d-inline-block mb-1" id="cdev-btn-sync">
                           <span class="icon text-white-50">
                             <i class="fas fa-calendar-check"></i>
@@ -200,7 +207,7 @@
                           <span class="icon text-white-50">
                             <i class="fas fa-power-off"></i>
                           </span>
-                          <span class="text">Wyłącz urządzenie</span>
+                          <span class="text">Wyłącz urządzenie (60s)</span>
                         </button>
                       </div>
                     </div>

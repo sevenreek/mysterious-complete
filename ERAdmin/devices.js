@@ -14,21 +14,18 @@ var devices = [];
 */
 function sendCommandString(devindex, str)
 {
+  //alert('http://' + devices[devindex][3] + ':' + devicesPort + str);
   $.ajax({
     url : 'http://' + devices[devindex][3] + ':' + devicesPort + str,
     cache : false,
     dataType : "json",
-    crossDomain : true/*,
-    success : function(statusData){
-      updateRoomState(deviceIndex,statusData);
-    }*/
+    crossDomain : true
   });
 }
 function updateSelectedDevice(selection)
 {
   selectedDevice = selection;
-  $('#cdev-name').html(devices[selectedDevice][0]);
-  $('#cdev-id').html(devices[selectedDevice][1]);
+  $('#cdev-id').html(devices[selectedDevice][1].toString(16));
   $('#cdev-ip').html(devices[selectedDevice][3]);
 }
 function sendCommandStringToAll(cmd)
@@ -63,21 +60,37 @@ $("#use-auto-ip").change(function()
   dumpDeviceList();
   populateDeviceList(useAutomaticDeviceDetection);
 });
+$("#unlock-globals").change(function()
+{
+  if(this.checked)
+  {
+    $("#global-reboot").prop("disabled", false);
+    $("#global-shutdown").prop("disabled", false);
+    $("#global-sync").prop("disabled", false);
+    
+  }
+  else
+  {
+    $("#global-reboot").prop("disabled", true);
+    $("#global-shutdown").prop("disabled", true);
+    $("#global-sync").prop("disabled", true);
+  }
+});
 $('#devices-sel').on('change', function() {
   updateSelectedDevice(this.val());
-});
-$('#cdev-cdev-btn-setdeftime').on('click', function() {
-  deftime = $('#cdev-cdev-btn-setdeftime-val').val();
+});/*
+$('#cdev-btn-setdeftime').on('click', function() {
+  deftime = $('#cdev-btn-setdeftime-val').val();
   sendCommandString(selectedDevice, '/timer/setdefault?val='+deftime);
-});
-$('#cdev-cdev-btn-sync').on('click', function() {
+});*/
+$('#cdev-btn-sync').on('click', function() {
   timestr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
   sendCommandString(selectedDevice, '/link?time='+timestr);
 });
-$('#cdev-cdev-btn-shutdown').on('click', function() {
+$('#cdev-btn-shutdown').on('click', function() {
   sendCommandString(selectedDevice, '/shutdown');
 });
-$('#cdev-cdev-btn-reboot').on('click', function() {
+$('#cdev-btn-reboot').on('click', function() {
   sendCommandString(selectedDevice, '/reboot');
 });
 $( document ).ready(function() {
@@ -95,6 +108,10 @@ function appendDeviceFromJSON(jsonfile, ip)
   $('#devices-sel').append(
     '<option value="'+ deviceIndexInDevicesArray +'">'+ deviceName +'</option>'
   );
+  if(deviceIndexInDevicesArray==0)
+  {
+    updateSelectedDevice(0);
+  }
 }
 function populateDeviceList(automatic)
 {
