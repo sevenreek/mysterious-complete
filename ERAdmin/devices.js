@@ -24,7 +24,9 @@ function sendCommandString(devindex, str)
 }
 function updateSelectedDevice(selection)
 {
+  
   selectedDevice = selection;
+  console.log("Updating with "+devices[selectedDevice]);
   $('#cdev-id').html(devices[selectedDevice][1].toString(16));
   $('#cdev-ip').html(devices[selectedDevice][3]);
 }
@@ -77,7 +79,7 @@ $("#unlock-globals").change(function()
   }
 });
 $('#devices-sel').on('change', function() {
-  updateSelectedDevice(this.val());
+  updateSelectedDevice($("#devices-sel option:selected").val());
 });/*
 $('#cdev-btn-setdeftime').on('click', function() {
   deftime = $('#cdev-btn-setdeftime-val').val();
