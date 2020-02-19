@@ -139,5 +139,6 @@ class MainRoomController(RoomEventListener):
     def setActive(self): # the room state can be stopped or ready which means the a game in the room is not in progress and the room is not "active"
         self.gameActive = True
         self.timeStarted = "{:02d}:{:02d}".format(datetime.datetime.now().hour, datetime.datetime.now().minute)
+        # could probably use datetime.datetime.now().strftime("%R") but this thing works too
     def setUnactive(self):
         self.gameActive = False

@@ -12,7 +12,7 @@ else
   exit 1
 fi
 echo "OK."
-read -p "Zaktualizowac system? [y/n]" -n 1 -r
+read -p "Zaktualizowac system? Ten proces jest czasochlonny. [y/n]" -n 1 -r
 echo    
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
