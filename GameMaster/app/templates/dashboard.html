@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block pagecontent %}
+    <script>
+        var devices = {{ devices | tojson }};
+    </script>
+    <script src="js/dashboard.js"></script>
+    {% for device in devices %}
+            <div class="col-12 mb-2">
+                <div class="card border-left-success shadow h-100 py-2" id="dev{{loop.index0}}-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                    <div class="col-xl-2 col-md-3 col-sm-6 align-items-center">
+                        <p class="text-md mb-0 font-weight-bold text-primary text-uppercase" id="dev{{loop.index0}}-name">{{ device.name }}({{ '{:04x}'.format(device.id)  }})</p>
+                        <p class="text-lg mb-0 font-weight-bold text-gray-800" id="dev{{loop.index0}}-primary">##:##</p>
+                        <p class="text-xs mb-0 font-weight-bold text-secondary text-uppercase " id="dev{{loop.index0}}-times">##:##-##:##</p>
+                    </div>
+                    <div class="col-xl-10 col-md-9 col-xs-6 d-flex flex-row flex-wrap bd-highlight align-items-center">
+                        <div class="bd-highlight">
+                        <button href="#" class="btn btn-success btn-icon-split m-1" id="dev{{loop.index0}}-btn-play" disabled>
+                            <span class="icon text-white-50">
+                            <i class="fas fa-play"></i>
+                            </span>
+                            <span class="text" id="dev{{loop.index0}}-btn-play-text">Wznów</span>
+                        </button>
+                        </div>
+                        <div class="bd-highlight">
+                        <button href="#" class="btn btn-warning btn-icon-split m-1" id="dev{{loop.index0}}-btn-pause">
+                            <span class="icon text-white-50">
+                            <i class="fas fa-pause"></i>
+                            </span>
+                            <span class="text">Pauza</span>
+                        </button>
+                        </div>
+                        <div class="bd-highlight">
+                        <button href="#" class="btn btn-danger btn-icon-split m-1" id="dev{{loop.index0}}-btn-stop">
+                            <span class="icon text-white-50">
+                            <i class="fas fa-stop"></i>
+                            </span>
+                            <span class="text">Zakończ grę</span>
+                        </button>
+                        </div>
+                        <div class="border-left-info m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev{{loop.index0}}-btn-reset-val" value="60">
+                        <button href="#" class="btn btn-info btn-icon-split d-inline-block" id="dev{{loop.index0}}-btn-reset" disabled>
+                            <span class="icon text-white-50">
+                            <i class="fas fa-redo "></i>
+                            </span>
+                            <span class="text">Reset pokoju</span>
+                        </button>
+                        </div>
+                        <div class="border-left-secondary m-1 shadow form-inline d-inline-block pl-1">
+                        <input type="number" placeholder="MM" class="form-control input-lg text-center h-100 d-inline-block" style="width:5em;" id="dev{{loop.index0}}-btn-add-val" value="5">
+                        <button href="#" class="btn btn-secondary btn-icon-split d-inline-block" id="dev{{loop.index0}}-btn-add">
+                            <span class="icon text-white-50 ">
+                            <i class="fas fa-plus"></i>
+                            </span>
+                            <span class="text">Dodaj Czas</span>
+                        </button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+    {% endfor %}
+    
+{% endblock %}
