@@ -1,6 +1,6 @@
 import busio
 import board
-from timerController import UnthreadedTimer
+from TimerController import UnthreadedTimer
 from displayController import AF_HT16K33_7Seg, CommandLineDisplay
 from timerServer import TimerServer
 

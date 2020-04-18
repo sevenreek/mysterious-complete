@@ -1,6 +1,5 @@
 import time
-from roomController import RoomEvent
-from BaseRoomController import BaseRoomController
+from BaseRoomController import BaseRoomController, RoomEvent
 class UpdateListener():
     def onUpdate(self):
         raise NotImplementedError
