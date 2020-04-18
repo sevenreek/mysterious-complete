@@ -1,8 +1,8 @@
 import busio
 import board
 from TimerController import UnthreadedTimer
-from displayController import AF_HT16K33_7Seg, CommandLineDisplay
-from timerServer import TimerServer
+from DisplayController import AF_HT16K33_7Seg, CommandLineDisplay
+from Server import TimerServer
 
 def main():
     roomname = CFG_ROOM_NAME
