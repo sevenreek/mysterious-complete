@@ -20,18 +20,18 @@ class BaseRoomController():
         self.gpio = gpio
         self.gameTime = GameTimeState(GameState.STATE_READY, self.timer.secondsRemaining, None) 
         self.eventHandlers = {
-            RoomEvent.EVT_SERVER_PLAY    : self._onGMPlay,
-            RoomEvent.EVT_SERVER_PAUSE   : self._onGMPause,
-            RoomEvent.EVT_SERVER_SETTIME : self._onGMSetTime,
-            RoomEvent.EVT_SERVER_ADDTIME : self._onGMAddTime,
-            RoomEvent.EVT_SERVER_STOP    : self._onGMStop,
-            RoomEvent.EVT_SERVER_RESET   : self._onGMReset,
-            RoomEvent.EVT_TIMER_HITZERO  : self._onTimerHitZero,
-            RoomEvent.EVT_GPIO_FINISHED  : self._onGPIOLastPuzzle,
-            RoomEvent.EVT_GPIO_PLAY      : self._onGPIOPlay,
-            RoomEvent.EVT_GPIO_PAUSE     : self._onGPIOPause,
-            RoomEvent.EVT_GPIO_STOPRESET : self._onGPIOStop,
-            RoomEvent.EVT_GPIO_ADDTIME   : self._onGPIOAddTime
+            BaseGameEvents.EVT_SERVER_PLAY    : self._onGMPlay,
+            BaseGameEvents.EVT_SERVER_PAUSE   : self._onGMPause,
+            BaseGameEvents.EVT_SERVER_SETTIME : self._onGMSetTime,
+            BaseGameEvents.EVT_SERVER_ADDTIME : self._onGMAddTime,
+            BaseGameEvents.EVT_SERVER_STOP    : self._onGMStop,
+            BaseGameEvents.EVT_SERVER_RESET   : self._onGMReset,
+            BaseGameEvents.EVT_TIMER_HITZERO  : self._onTimerHitZero,
+            BaseGameEvents.EVT_GPIO_FINISHED  : self._onGPIOLastPuzzle,
+            BaseGameEvents.EVT_GPIO_PLAY      : self._onGPIOPlay,
+            BaseGameEvents.EVT_GPIO_PAUSE     : self._onGPIOPause,
+            BaseGameEvents.EVT_GPIO_STOPRESET : self._onGPIOStop,
+            BaseGameEvents.EVT_GPIO_ADDTIME   : self._onGPIOAddTime
         }
     @property
     def roomThemeID(self):

@@ -1,5 +1,5 @@
 import time
-from BaseRoomController import BaseRoomController, RoomEvent
+from BaseRoomController import BaseRoomController, GameEvent, BaseGameEvents
 class UpdateListener():
     def onUpdate(self):
         raise NotImplementedError
@@ -43,4 +43,4 @@ class UnthreadedTimer(UpdateListener):
             listener.onTick(self.secondsRemaining, self.countingDown)
         if(self.secondsRemaining == 0 and self.countingDown):
             self.pause()
-            self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_TIMER_HITZERO, None))
+            self.roomctrl.raiseEvent(GameEvent(BaseGameEvents.TIMER_HITZERO, None))
