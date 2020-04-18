@@ -2,8 +2,7 @@ import time
 import board
 import busio
 from adafruit_ht16k33 import segments
-from timerController import TickListener
-from roomController import RoomEvent
+from TimerController import TickListener
 from logger import Logger
 class IDisplayController(TickListener):
     def killDisplay(self):
