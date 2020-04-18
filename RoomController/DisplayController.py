@@ -3,7 +3,6 @@ import board
 import busio
 from adafruit_ht16k33 import segments
 from TimerController import TickListener
-from logger import Logger
 class IDisplayController(TickListener):
     def killDisplay(self):
         raise NotImplementedError
@@ -20,7 +19,6 @@ class AF_HT16K33_7Seg(IDisplayController):
         self.display = segments.Seg7x4(i2c)
         self.mode = AF_HT16K33_7Seg.MODE_MMSS
         self.blink = False
-        Logger.instance.log("Loaded I2C 7-segment display.")
     def killDisplay(self):
         pass
     def enableDisplay(self):
