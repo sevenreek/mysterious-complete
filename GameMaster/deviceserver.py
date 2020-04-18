@@ -13,6 +13,7 @@ class Device():
         self.timeleft = dictionary['timeleft']
         self.status = dictionary['status']
         self.alerts = Queue(maxsize=16)
+        self.components  = []
     def __init__(self, name, timeleft, devid, status, ip):
         self.ip = ip
         self.name = name
@@ -20,6 +21,7 @@ class Device():
         self.timeleft = timeleft
         self.status = status
         self.alerts = Queue(maxsize=16)
+        self.components  = {}
     def getBasicStatusDictionary(self):
         return {
             'id' : self.id,

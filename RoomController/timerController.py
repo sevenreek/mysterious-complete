@@ -1,5 +1,6 @@
 import time
 from roomController import RoomEvent
+from BaseRoomController import BaseRoomController
 class UpdateListener():
     def onUpdate(self):
         raise NotImplementedError
@@ -7,7 +8,7 @@ class TickListener():
     def onTick(self, secLeft, countingDown):
         raise NotImplementedError
 class UnthreadedTimer(UpdateListener):
-    def __init__(self, roomController):
+    def __init__(self, roomController : BaseRoomController):
         self.tickListeners = []
         self.secondsRemaining = 0
         self.countingDown = False

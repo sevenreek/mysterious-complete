@@ -1,45 +1,36 @@
 from bottle import Bottle, route, run, template, request, response, static_file
 from roomdevices import ROOMDEVICES
-from roomController import RoomEvent
-from CONFIGURATION import CFG_LOGS_DIR, CFG_LOGS_DATE_FORMAT
+from RoomControllers import DebugRoomController
+from BaseRoomController import BaseRoomController
+from Config import *
 import time
 import datetime
 import threading
 import socket
 import json
 import os
-from logger import Logger
 class TimerServer():
-    BROADCAST_REPEAT_PERIOD_UNLINKED = 5
-    BROADCAST_REPEAT_PERIOD_LINKED = 60
-    def __init__(self, timerInterface, roomID, roomName, host, port, broadcastPort, roomController):
-        self._timerSocket = timerInterface
-        self._host = host
-        self._port = port
-        self._broadcastPort = broadcastPort
-        self._roomID = roomID
-        self._roomName = roomName
-        self.roomctrl = roomController
-        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_UNLINKED
+    def __init__(self, roomController : BaseRoomController, config : RoomConfig):
+        self.config = config
+        self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_UNLINKED
         self._shouldBroadcast = False
-        self._broadcastIP = '255.255.255.255'
+        self._broadcastIP = '<broadcast>'
+        self._gameMasterIP = None
+        self.deviceIP = None
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try: # try to obtain local ip of device
             # doesn't even have to be reachable
             s.connect(('10.255.255.255', 1))
             self._deviceIP = s.getsockname()[0]
             splitIP = self._deviceIP.split('.')
-            #self._broadcastIP = splitIP[0] + '.' + splitIP[1] + '.255.255'
-            self._broadcastIP = '<broadcast>'
-            print("Running on IP: " + self._deviceIP)
-            print("Broadcasting on IP: " + self._broadcastIP)
         except:
             self._deviceIP = '127.0.0.1'
         finally:
             s.close()
+        print("Running on IP: " + self._deviceIP)
+        print("Broadcasting on IP: " + self._broadcastIP)
         self._bottleApp = Bottle()
         self._route()
-        Logger.glog("Server initialized.")
     def _route(self):
         self._bottleApp.route('/timer/status', method="GET", callback=self._status)
         self._bottleApp.route('/timer/pause', method="GET", callback=self._pause)
@@ -55,7 +46,6 @@ class TimerServer():
         self._bottleApp.route('/unlink', method="GET", callback=self._unlink)
         self._bottleApp.route('/logs/<filepath>', method="GET", callback=self._servelog)
         self._bottleApp.route('/logs', method="GET", callback=self._servelog)
-        self._bottleApp.route('/broadcast', method="GET", callback=self.broadcastSelf)
         self._bottleApp.route('/who', method="GET", callback=self._who)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
     def _status(self):
@@ -63,18 +53,14 @@ class TimerServer():
         return jsonf
     def _pause(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PAUSE))
-        Logger.glog("Received pause request.")
         return self._status()
     def _play(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PLAY))
-        Logger.glog("Received play request.")
         return self._status()
     def _stop(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_STOP))
-        Logger.glog("Received stop request.")
         return self._status()
     def _set(self):
-        Logger.glog("Received set request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_SETTIME, seconds))
@@ -83,7 +69,6 @@ class TimerServer():
             return self._status() 
         return self._status()
     def _add(self):
-        Logger.glog("Received add request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_ADDTIME, seconds))
@@ -92,7 +77,6 @@ class TimerServer():
             print(e)
             return self._status()
     def _reset(self):
-        Logger.glog("Received reset request.")
         try:
             seconds = int(request.query.get('totalseconds'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_RESET, seconds))
@@ -101,36 +85,28 @@ class TimerServer():
             print(e)
             return self._status()
     def _servelog(self, filepath=datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT)):
-        Logger.glog("Requested log file " + filepath)
         return static_file(filepath, Logger.instance.logsDirectory) 
     def startServer(self):
-        Logger.glog("Starting server.")
         self._bottleApp.run(host=self._host, port=self._port)
-    def broadcastSelf(self):
+    def sendStatus(self, toHost, onPort):
         try:
             broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            jsonFile = json.dumps(
-                ( 
-                self._roomName,
-                self._roomID,
-                ROOMDEVICES.MODEL_RPI
-                )
-            )
+            jsonFile = self._status()
             byteSequence = bytes(jsonFile, 'utf-8') 
-            broadcastSocket.sendto( byteSequence, (self._broadcastIP, self._broadcastPort) )
+            broadcastSocket.sendto( byteSequence, (toHost, onPort) )
             broadcastSocket.close()
         except Exception as e:
-            print("Broadcast failed!")
             print(e)
     def broadcastContinous(self):
-        Logger.glog("Starting UDP broadcasting.")
         self._shouldBroadcast = True
         while(self._shouldBroadcast):
-            self.broadcastSelf()
+            if(self._gameMasterIP is not None):
+                self.sendStatus(self._gameMasterIP, self._broadcastPort)
+            else:
+                self.sendStatus(self._broadcastIP, self._broadcastPort)
             time.sleep(self._broadcastPeriod)
     def _who(self):
-        Logger.glog("Received /who.")
         return json.dumps(
             ( 
             self._roomName,
@@ -139,38 +115,29 @@ class TimerServer():
             )
         )
     def _link(self):
-        Logger.glog("Linked.")
         self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
         try:
             time = request.query.get('time')
             if(time is not None):
                 os.system('sudo date +%R -s "{0}"'.format(time))
-                Logger.glog('Changed time to {0}'.format(time))
-            else:
-                Logger.glog('Could not parse ?time from /link')
         except (ValueError, TypeError) as e:
-            Logger.glog(str(e))
             return self._status() 
         return self._status()
     def _sudo(self):
-        Logger.glog("Executing arbitrary shell command.")
         try:
             cmd = request.query.get('cmd')
-            Logger.glog('Executing command: ' + cmd)
             os.system(cmd)
         except (ValueError, TypeError) as e:
             print(e)
             return self._status() 
         return self._status()  
     def _reboot(self):
-        Logger.glog("Rebooting device.")
         try:
             os.system("sudo reboot")
         except Exception as e:
             print(e)
         return self._status()
     def _shutdown(self):
-        Logger.glog("Shutting device down in 1 minute.")
         try:
             os.system("sudo shutdown -h 1")
         except Exception as e:
