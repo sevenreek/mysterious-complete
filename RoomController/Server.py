@@ -84,7 +84,9 @@ class TimerServer():
         except (ValueError, TypeError) as e:
             print(e)
             return self._status()
-    def _servelog(self, filepath=datetime.date.today().strftime(self.config.LOGS_DATE_FORMAT)):
+    def _servelog(self, filepath=None):
+        if (filepath is None):
+            filepath = datetime.date.today().strftime(self.config.LOGS_DATE_FORMAT)
         return "Not implemented"
         #return static_file(filepath, Logger.instance.logsDirectory) 
     def startServer(self):
