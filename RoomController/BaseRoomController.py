@@ -19,6 +19,9 @@ class BaseRoomController():
         self.timer = timer
         self.gpio = gpio
         self.gameTime = GameTimeState(GameState.STATE_READY, self.timer.secondsRemaining, None) 
+        self.eventHandlers = {}
+        self.setEventHandlers()
+    def setEventHandlers(self):
         self.eventHandlers = {
             BaseGameEvents.EVT_SERVER_PLAY    : self._onGMPlay,
             BaseGameEvents.EVT_SERVER_PAUSE   : self._onGMPause,

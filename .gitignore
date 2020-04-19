@@ -4,3 +4,5 @@ TimerServer/logs
 DashboardServer/__pycache__
 ~$Readme.docx
 ~WRL3350.tmp
+RoomController/__pycache__
+RoomController/__pycache__/*
