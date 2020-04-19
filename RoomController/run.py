@@ -3,9 +3,11 @@ import board
 from TimerController import UnthreadedTimer
 from DisplayController import AF_HT16K33_7Seg, CommandLineDisplay
 from Server import TimerServer
-
+from Config import RoomConfig
+from RoomControllers import DebugRoomController
 def main():
-    roomname = CFG_ROOM_NAME
+    cfg = RoomConfig()
+    roomname = cfg.ROOM_NAME
     roomController = MainRoomController()
     gpio = GPIOController(roomController)
     dsp = None
