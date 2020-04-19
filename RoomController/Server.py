@@ -84,8 +84,8 @@ class TimerServer():
         except (ValueError, TypeError) as e:
             print(e)
             return self._status()
-    def _servelog(self, filepath=datetime.date.today().strftime(CFG_LOGS_DATE_FORMAT)):
-        return static_file(filepath, Logger.instance.logsDirectory) 
+    def _servelog(self, filepath=datetime.date.today().strftime(self.config.LOGS_DATE_FORMAT)):
+        #return static_file(filepath, Logger.instance.logsDirectory) 
     def startServer(self):
         self._bottleApp.run(host=self._host, port=self._port)
     def sendStatus(self, toHost, onPort):
