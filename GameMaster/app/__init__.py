@@ -14,6 +14,3 @@ login.login_view = 'login'
 deviceServer = DevicesCommunicationServer(Config, AlertConfig)
 from app import routes, models
 
-if __name__ == "__main__":
-    deviceServer.runThreaded()
-    app.run()

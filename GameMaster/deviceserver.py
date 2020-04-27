@@ -6,28 +6,21 @@ import json
 import datetime
 from queue import Queue
 class Device():
-    def __init__(self, dictionary, ip):
-        self.ip = ip
-        self.name = dictionary['name']
-        self.id = dictionary['id']
-        self.timeleft = dictionary['timeleft']
-        self.status = dictionary['status']
-        self.alerts = Queue(maxsize=16)
-        self.components  = []
-    def __init__(self, name, timeleft, devid, status, ip):
+    def __init__(self, ip : str, name : str, did : int, timeleft = None, state = None, startedon = None, components = {}):
         self.ip = ip
         self.name = name
-        self.id = devid
+        self.id = did
         self.timeleft = timeleft
-        self.status = status
+        self.state = state
+        self.startedon = startedon
         self.alerts = Queue(maxsize=16)
-        self.components  = {}
+        self.components  = components
     def getBasicStatusDictionary(self):
         return {
             'id' : self.id,
             'name' : self.name,
             'timeleft' : self.timeleft,
-            'status' : self.status,
+            'state' : self.state,
             'alertcount' : self.alerts.qsize()
         }
     def appendAlert(self, alert):
@@ -63,21 +56,28 @@ class DevicesCommunicationServer():
                 print(message)
                 try:
                     deviceDataRaw = json.loads(message)
-                    deviceData = Device(deviceDataRaw, deviceIP)
+                    deviceData = Device(
+                        ip = deviceIP, 
+                        name = deviceDataRaw['name'],
+                        did = deviceDataRaw['id'],
+                        timeleft = deviceDataRaw['timeleft'],
+                        state = deviceDataRaw['state'])
                     if((deviceData.id & self.deviceMask) == self.deviceMask):
+                        deviceKnown = False
                         for deviceIndex in range(len(self.detectedDevices)):
                             if(self.detectedDevices[deviceIndex].id == deviceData.id):
-                                self.detectedDevices[deviceIndex].timeleft = deviceData.timeleft
-                            else:
-                                print('New device recognized. Syncing time.')
-                                r = requests.get(url = 'http://' + str(deviceIP) + ':' + str(self.tcpPort) + '/link?time=' + datetime.datetime.now().strftime('%R')) 
-                                try:
-                                    r.raise_for_status()
-                                except requests.exceptions.HTTPError as e:
-                                    deviceData.appendAlert(self.alertConfig.ERROR_HTTP_LINK_FAILED)
-                                    print(e)
-                                self.detectedDevices.append(deviceData)
-                except json.JSONDecodeError as e:
+                                self.detectedDevices[deviceIndex] = deviceData
+                                deviceKnown = True
+                        if not deviceKnown:
+                            print('New device recognized. Syncing time.')
+                            r = requests.get(url = 'http://' + str(deviceIP) + ':' + str(self.tcpPort) + '/link?time=' + datetime.datetime.now().strftime('%R')) 
+                            try:
+                                r.raise_for_status()
+                            except requests.exceptions.HTTPError as e:
+                                deviceData.appendAlert(self.alertConfig.ERROR_HTTP_LINK_FAILED)
+                                print(e)
+                            self.detectedDevices.append(deviceData)
+                except (json.JSONDecodeError, KeyError) as e:
                     print(e)
             except Exception as e:
                 print(e)

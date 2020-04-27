@@ -9,7 +9,7 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEVICESERVER_UDP_PORT = 4000
-    DEVICESERVER_TCP_PORT = 8000
+    DEVICESERVER_TCP_PORT = 8080
     DEVICESERVER_USE_TCP_UPDATE = False
     DEVICESERVER_UDP_BUFFER = 256
     DEVICE_MASK = 0xDE00
