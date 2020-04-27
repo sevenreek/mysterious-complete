@@ -1,24 +1,25 @@
 from RoomControllers import RoomIDs
-import RPi
+from RPi import GPIO
 class RoomConfig():
     # Feel free to edit these
     ROOM_NAME = "Test Room #1"
     DEFAULT_TIME = 3600 # in seconds
     ROOM_UNIQUE_ID = 0xDE00 | RoomIDs.DEBUGROOM.value # device ID has to have the format of 0xDE%%
+    # Probably don't touch these
+    I2C_FREQUENCY = 100000
+class ServerConfig():
     ALLOW_SUDO = True # allows execution of arbitrary sudo command from http request; 
                       # extreme security risk if anyone from outside connects to the network;
                       # keep False if not debugging
-    STATUS_BROADCAST_REPEAT_PERIOD_UNLINKED = 5 # sec
+    STATUS_BROADCAST_REPEAT_PERIOD_UNLINKED = 3 # sec
     STATUS_BROADCAST_REPEAT_PERIOD_LINKED = 1
-    # Probably don't touch these
-    I2C_FREQUENCY = 100000
     LOGS_DIR = 'logs' 
     LOGS_DATE_FORMAT = '%Y-%m-%d'
     LOGS_TIME_FORMAT = '[%H:%M:%S] '
     LOGS_DAYS_ARCHIVE_SIZE = 7
     UDP_DETECT_BROADCAST_PORT = 4000
     HTTP_SERVER_PORT = 8080
-    HTTP_SEVER_HOST = '0.0.0.0'
+    HTTP_SERVER_HOST = '0.0.0.0'
 class BaseGPIOConfig():
     TRIGGER_HOLD_TIME = 0.025 # seconds
     BTN_PLAY = 14
@@ -34,4 +35,4 @@ class BaseGPIOConfig():
     DOOR_OPEN_VOLTAGE = 1
     PIN_LAST_PUZZLE = 24
     DEBOUNCE_TIME = 200
-    PULLUP_MODE = RPi.GPIO.PUD_UP
+    PULLUP_MODE = GPIO.PUD_UP

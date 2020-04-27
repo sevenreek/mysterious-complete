@@ -2,7 +2,7 @@ from bottle import Bottle, route, run, template, request, response, static_file
 from roomdevices import ROOMDEVICES
 from RoomControllers import DebugRoomController
 from BaseRoomController import BaseRoomController
-from Config import *
+from Config import ServerConfig
 import time
 import datetime
 import threading
@@ -10,8 +10,9 @@ import socket
 import json
 import os
 class TimerServer():
-    def __init__(self, roomController : BaseRoomController, config : RoomConfig):
+    def __init__(self, roomController : BaseRoomController, config : ServerConfig):
         self.config = config
+        self.roomctrl = roomController
         self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_UNLINKED
         self._shouldBroadcast = False
         self._broadcastIP = '<broadcast>'
@@ -49,7 +50,8 @@ class TimerServer():
         self._bottleApp.route('/who', method="GET", callback=self._who)
         self._bottleApp.add_hook('after_request', func=self._enable_cors)
     def _status(self):
-        jsonf = json.dumps(self.roomctrl.getState().__dict__) 
+        statusState = {}
+        jsonf = json.dumps(self.roomctrl.getState()) 
         return jsonf
     def _pause(self):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_PAUSE))
@@ -90,24 +92,26 @@ class TimerServer():
         return "Not implemented"
         #return static_file(filepath, Logger.instance.logsDirectory) 
     def startServer(self):
-        self._bottleApp.run(host=self._host, port=self._port)
+        self._bottleApp.run(host=self.config.HTTP_SERVER_HOST, port=self.config.HTTP_SERVER_PORT)
     def sendStatus(self, toHost, onPort):
         try:
             broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             jsonFile = self._status()
-            byteSequence = bytes(jsonFile, 'utf-8') 
+            byteSequence = bytes(jsonFile, 'utf-8')
+            print('Sending status to: {0}:{1}'.format(toHost, onPort))
             broadcastSocket.sendto( byteSequence, (toHost, onPort) )
             broadcastSocket.close()
         except Exception as e:
-            print(e)
+            print('exception')
+            print(str(e))
     def broadcastContinous(self):
         self._shouldBroadcast = True
         while(self._shouldBroadcast):
             if(self._gameMasterIP is not None):
-                self.sendStatus(self._gameMasterIP, self._broadcastPort)
+                self.sendStatus(self._gameMasterIP, self.config.UDP_DETECT_BROADCAST_PORT)
             else:
-                self.sendStatus(self._broadcastIP, self._broadcastPort)
+                self.sendStatus(self._broadcastIP, self.config.UDP_DETECT_BROADCAST_PORT)
             time.sleep(self._broadcastPeriod)
     def _who(self):
         return json.dumps(
@@ -118,7 +122,8 @@ class TimerServer():
             )
         )
     def _link(self):
-        self._broadcastPeriod = self.BROADCAST_REPEAT_PERIOD_LINKED
+        self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_LINKED
+        self._gameMasterIP = request.environ.get('REMOTE_ADDR')
         try:
             time = request.query.get('time')
             if(time is not None):

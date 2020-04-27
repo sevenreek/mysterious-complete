@@ -2,7 +2,6 @@
 from BaseRoomController import BaseRoomController
 import RPi.GPIO as GPIO
 from Config import BaseGPIOConfig
-from logger import Logger
 from time import sleep
 
 
@@ -45,7 +44,7 @@ class PulseDoorLock(GPIODevice):
 class BaseControlPanel(GPIODevice):
     def getStateDict(self):
         return None
-    def __init__(self, eventSystem : BaseRoomController.BaseRoomController, btn_play : int, btn_reset : int, btn_addtime : int, btn_pause : int, pullupdown, debounce : int = 100):
+    def __init__(self, eventSystem : BaseRoomController, btn_play : int, btn_reset : int, btn_addtime : int, btn_pause : int, pullupdown, debounce : int = 100):
         self.buttonPlay = btn_play
         self.buttonReset = btn_reset
         self.buttonAdd = btn_addtime
@@ -89,7 +88,7 @@ class StartTrigger(GPIODevice):
         return None # returns none since it is tied directly to timer states, so information is redundant
 
 class BaseGPIOController():
-    def __init__(self, roomctrl : BaseRoomController.BaseRoomController, config : BaseGPIOConfig):
+    def __init__(self, roomctrl : BaseRoomController, config : BaseGPIOConfig):
         GPIO.setmode(GPIO.BCM)
         self.roomctrl = roomctrl
         self.controlPanel = BaseControlPanel(roomctrl, config.BTN_PLAY, config.BTN_STOP_AND_RESET, config.BTN_ADD_TIME, config.BTN_PAUSE, config.PULLUP_MODE, config.DEBOUNCE_TIME)
