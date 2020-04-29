@@ -7,18 +7,13 @@ from werkzeug.urls import url_parse
 import json
 from unittest import mock
 from deviceserver import Device, BasicDeviceEncoder
-mockDevices = [
-    Device('Test 1', 3600, 0xDE01, 0, '0.0.0.1'),
-    Device('Test 2', 3000, 0xDE02, 0, '0.0.0.2'),
-    Device('Test 3', 2400, 0xDE03, 0, '0.0.0.3'),
-    Device('Test 4', 1800, 0xDE04, 0, '0.0.0.4')
-]
+
 @app.route('/')
 @app.route('/index')
 def index():
     user = {'displayname' : 'Pracownik #01'}
     deviceDict = [device.getBasicStatusDictionary() for device in mockDevices]
-    return render_template('dashboard.html', title='Home', user=user, devices=deviceDict)
+    return render_template('dashboard.html', title='Home', user=user, devices=app.config['DEVICE_LIST'])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -46,7 +41,7 @@ def logout():
 @app.route('/devices/raw')
 def listdevices():
     #return json.dumps(deviceServer.detectedDevices)
-    return json.dumps(mockDevices, cls=BasicDeviceEncoder)
+    return json.dumps(app.config['DEVICE_LIST'], cls=BasicDeviceEncoder)
 @app.route('/devices/<int:index>')
 def detaildevice(index):
     pass

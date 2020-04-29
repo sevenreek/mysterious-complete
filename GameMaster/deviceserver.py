@@ -6,7 +6,7 @@ import json
 import datetime
 from queue import Queue
 class Device():
-    def __init__(self, ip : str, name : str, did : int, timeleft = None, state = None, startedon = None, components = {}):
+    def __init__(self, ip : str, name : str, did : int, timeleft = None, linkedHostName=None, state = None, startedon = None, components = {}):
         self.ip = ip
         self.name = name
         self.id = did
@@ -14,6 +14,7 @@ class Device():
         self.state = state
         self.startedon = startedon
         self.alerts = Queue(maxsize=16)
+        self.linkedHostName = linkedHostName
         self.components  = components
     def getBasicStatusDictionary(self):
         return {
@@ -44,39 +45,28 @@ class DevicesCommunicationServer():
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.bind(('', self.udpPort))
         self.detectedDevices = []
+        self.hostName = socket.gethostname() # ip of admin server
     def run(self):
         self.threadAlive = True
         while(self.threadAlive):
             try:
                 if self.useTCPPolling:
                    self.tcpPollDevices()
-                packet = self.serverSocket.recvfrom(self.bufferSize)    
+                packet = self.serverSocket.recvfrom(self.bufferSize) # recieve packet
                 deviceIP = packet[1][0]
                 message = packet[0].decode('utf-8')
-                print(message)
                 try:
-                    deviceDataRaw = json.loads(message)
-                    deviceData = Device(
-                        ip = deviceIP, 
-                        name = deviceDataRaw['name'],
-                        did = deviceDataRaw['id'],
-                        timeleft = deviceDataRaw['timeleft'],
-                        state = deviceDataRaw['state'])
+                    deviceJSON = json.loads(message)
+                    deviceData = self.deviceFromDict(jsonstr=deviceJSON, deviceIP=deviceIP)
                     if((deviceData.id & self.deviceMask) == self.deviceMask):
-                        deviceKnown = False
-                        for deviceIndex in range(len(self.detectedDevices)):
-                            if(self.detectedDevices[deviceIndex].id == deviceData.id):
-                                self.detectedDevices[deviceIndex] = deviceData
-                                deviceKnown = True
+                        deviceKnown = self.checkIfDeviceIsKnown(deviceData)
                         if not deviceKnown:
-                            print('New device recognized. Syncing time.')
-                            r = requests.get(url = 'http://' + str(deviceIP) + ':' + str(self.tcpPort) + '/link?time=' + datetime.datetime.now().strftime('%R')) 
-                            try:
-                                r.raise_for_status()
-                            except requests.exceptions.HTTPError as e:
-                                deviceData.appendAlert(self.alertConfig.ERROR_HTTP_LINK_FAILED)
-                                print(e)
+                            print('Unlinked device recognized. Syncing time.')
+                            self.linkDevice(device=deviceData, ip=deviceIP)
                             self.detectedDevices.append(deviceData)
+                        elif deviceData.linkedHostName != self.hostName:
+                            print('Wrongly linked device recognized. Syncing time.')
+                            self.linkDevice(device=deviceData, ip=deviceIP)
                 except (json.JSONDecodeError, KeyError) as e:
                     print(e)
             except Exception as e:
@@ -91,5 +81,28 @@ class DevicesCommunicationServer():
             jsonData = response.json()
             device.timeleft = jsonData['timeleft']
             device.status = jsonData['status']
-
-
+    def deviceFromDict(self, jsonstr, deviceIP) -> Device:
+        return Device(
+            ip = deviceIP, 
+            name = jsonstr['name'],
+            did = jsonstr['id'],
+            timeleft = jsonstr['timeleft'],
+            state = jsonstr['state'], 
+            linkedIP = jsonstr['gm'])
+    def checkIfDeviceIsKnown(self, device : Device) -> bool:
+        deviceKnown = False
+        for deviceIndex in range(len(self.detectedDevices)):
+            if(self.detectedDevices[deviceIndex].id == device.id):
+                self.detectedDevices[deviceIndex] = device
+                deviceKnown = True
+                break
+        return deviceKnown
+    def linkDevice(self, device : Device, ip: str) -> bool:
+        r = requests.get(url = 'http://' + str(ip) + ':' + str(self.tcpPort) + '/link?time=' + datetime.datetime.now().strftime('%R')) 
+        try:
+            r.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            device.appendAlert(self.alertConfig.ERROR_HTTP_LINK_FAILED)
+            print(e)
+            return False
+        return True

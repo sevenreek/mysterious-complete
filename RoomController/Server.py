@@ -16,7 +16,7 @@ class TimerServer():
         self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_UNLINKED
         self._shouldBroadcast = False
         self._broadcastIP = '<broadcast>'
-        self._gameMasterIP = None
+        self.linkedHostName = None
         self.deviceIP = None
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try: # try to obtain local ip of device
@@ -123,7 +123,7 @@ class TimerServer():
         )
     def _link(self):
         self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_LINKED
-        self._gameMasterIP = request.environ.get('REMOTE_ADDR')
+        self.linkedHostName = socket.gethostbyaddr(request.environ.get('REMOTE_ADDR'))
         try:
             time = request.query.get('time')
             if(time is not None):
