@@ -65,7 +65,7 @@ class TimerServer():
         return self._status()
     def _set(self):
         try:
-            seconds = int(request.query.get('totalseconds'))
+            seconds = int(request.query.get('t'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_SETTIME, seconds))
         except (ValueError, TypeError) as e:
             print(e)
@@ -73,7 +73,7 @@ class TimerServer():
         return self._status()
     def _add(self):
         try:
-            seconds = int(request.query.get('totalseconds'))
+            seconds = int(request.query.get('t'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_ADDTIME, seconds))
             return self._status()
         except (ValueError, TypeError) as e:
@@ -81,7 +81,7 @@ class TimerServer():
             return self._status()
     def _reset(self):
         try:
-            seconds = int(request.query.get('totalseconds'))
+            seconds = int(request.query.get('t'))
             self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_SERVER_RESET, seconds))
             return self._status()
         except (ValueError, TypeError) as e:

@@ -21,6 +21,8 @@ class Device():
         return {
             'id' : self.id,
             'name' : self.name,
+            'ip' : self.ip,
+            'gm' : self.linkedToIP,
             'timeleft' : self.timeleft,
             'state' : self.state,
             'alertcount' : self.alerts.qsize()
@@ -89,7 +91,7 @@ class DevicesCommunicationServer():
             did = jsonstr['id'],
             timeleft = jsonstr['timeleft'],
             state = jsonstr['state'], 
-            linkedHostName = jsonstr['gm'])
+            linkedIP = jsonstr['gm'])
     def checkIfDeviceIsKnown(self, device : Device) -> bool:
         deviceKnown = False
         for deviceIndex in range(len(self.detectedDevices)):

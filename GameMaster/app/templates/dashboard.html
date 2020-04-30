@@ -63,6 +63,25 @@
                 </div>
                 </div>
             </div>
+            <script>
+            $( "#dev{{loop.index0}}-btn-play" ).click(function() {
+                playRoom({{loop.index0}});
+            });
+            $( "#dev{{loop.index0}}-btn-pause" ).click(function() {
+                pauseRoom({{loop.index0}});
+            });
+            $( "#dev{{loop.index0}}-btn-stop" ).click(function() {
+                stopRoom({{loop.index0}});
+            });
+            $( "#dev{{loop.index0}}-btn-reset" ).click(function() {
+                minutes = parseInt($( "#dev{{loop.index0}}-btn-reset-val" ).val());
+                resetRoom({{loop.index0}}, minutes);
+            });
+            $( "#dev{{loop.index0}}-btn-add" ).click(function() {
+                minutes = parseInt($( "#dev{{loop.index0}}-btn-add-val" ).val());
+                addRoomTime({{loop.index0}}, minutes);
+            });
+            </script>
     {% endfor %}
     
 {% endblock %}

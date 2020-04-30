@@ -12,8 +12,8 @@ from deviceserver import Device, BasicDeviceEncoder
 @app.route('/index')
 def index():
     user = {'displayname' : 'Pracownik #01'}
-    deviceDict = [device.getBasicStatusDictionary() for device in mockDevices]
-    return render_template('dashboard.html', title='Home', user=user, devices=app.config['DEVICE_LIST'])
+    devicesList = [device.getBasicStatusDictionary() for device in app.config['DEVICE_LIST']]
+    return render_template('dashboard.html', title='Home', user=user, devices=devicesList)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
