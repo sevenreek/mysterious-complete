@@ -1,12 +1,13 @@
 import requests
 import socket
 import threading
+
 from config import Config, AlertConfig
 import json
 import datetime
 from queue import Queue
 class Device():
-    def __init__(self, ip : str, name : str, did : int, timeleft = None, linkedHostName=None, state = None, startedon = None, components = {}):
+    def __init__(self, ip : str, name : str, did : int, timeleft = None, linkedIP=None, state = None, startedon = None, components = {}):
         self.ip = ip
         self.name = name
         self.id = did
@@ -14,7 +15,7 @@ class Device():
         self.state = state
         self.startedon = startedon
         self.alerts = Queue(maxsize=16)
-        self.linkedHostName = linkedHostName
+        self.linkedToIP = linkedIP
         self.components  = components
     def getBasicStatusDictionary(self):
         return {
@@ -25,9 +26,6 @@ class Device():
             'alertcount' : self.alerts.qsize()
         }
     def appendAlert(self, alert):
-        for a in self.alerts:
-            if a[0] == alert[0]:
-                return False
         self.alerts.put(alert)
         return True
 class BasicDeviceEncoder(json.JSONEncoder):
@@ -45,7 +43,7 @@ class DevicesCommunicationServer():
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.serverSocket.bind(('', self.udpPort))
         self.detectedDevices = []
-        self.hostName = socket.gethostname() # ip of admin server
+
     def run(self):
         self.threadAlive = True
         while(self.threadAlive):
@@ -60,11 +58,14 @@ class DevicesCommunicationServer():
                     deviceData = self.deviceFromDict(jsonstr=deviceJSON, deviceIP=deviceIP)
                     if((deviceData.id & self.deviceMask) == self.deviceMask):
                         deviceKnown = self.checkIfDeviceIsKnown(deviceData)
+                        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                        s.connect((deviceIP, 8080))
+                        hostIP = s.getsockname()[0]
                         if not deviceKnown:
                             print('Unlinked device recognized. Syncing time.')
                             self.linkDevice(device=deviceData, ip=deviceIP)
                             self.detectedDevices.append(deviceData)
-                        elif deviceData.linkedHostName != self.hostName:
+                        elif deviceData.linkedToIP != hostIP:
                             print('Wrongly linked device recognized. Syncing time.')
                             self.linkDevice(device=deviceData, ip=deviceIP)
                 except (json.JSONDecodeError, KeyError) as e:
@@ -88,7 +89,7 @@ class DevicesCommunicationServer():
             did = jsonstr['id'],
             timeleft = jsonstr['timeleft'],
             state = jsonstr['state'], 
-            linkedIP = jsonstr['gm'])
+            linkedHostName = jsonstr['gm'])
     def checkIfDeviceIsKnown(self, device : Device) -> bool:
         deviceKnown = False
         for deviceIndex in range(len(self.detectedDevices)):

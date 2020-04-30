@@ -97,7 +97,7 @@ class TimerServer():
     def sendStatus(self, toHost, onPort):
         try:
             broadcastSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            broadcastSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 'eth0')
             jsonFile = self._status()
             byteSequence = bytes(jsonFile, 'utf-8')
             print('Sending status to: {0}:{1}'.format(toHost, onPort))
