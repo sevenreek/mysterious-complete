@@ -30,7 +30,7 @@ class Device():
             'gm' : self.linkedToIP,
             'timeleft' : self.timeleft,
             'state' : self.state,
-            'updatedago' : lastReceivedPacketDiff
+            'updatedago' : lastReceivedPacketDiff,
             'alertcount' : self.alerts.qsize()
         }
     def appendAlert(self, alert):

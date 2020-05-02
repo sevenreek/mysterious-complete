@@ -126,7 +126,6 @@ class TimerServer():
     def _link(self):
         self._broadcastPeriod = self.config.STATUS_BROADCAST_REPEAT_PERIOD_LINKED
         self._gameMasterIP = request.environ.get('REMOTE_ADDR')
-        self.linkedHostName = socket.gethostbyaddr(self._gameMasterIP)
         try:
             time = request.query.get('time')
             if(time is not None):

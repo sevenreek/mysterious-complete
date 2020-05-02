@@ -8,12 +8,11 @@ import json
 from unittest import mock
 from deviceserver import Device, BasicDeviceEncoder
 from run import CK_DEVICE_SERVER
-deviceServer = app.config[CK_DEVICE_SERVER]
 @app.route('/')
 @app.route('/index')
 def index():
     user = {'displayname' : 'Pracownik #01'}
-    devicesList = [device.getBasicStatusDictionary() for device in deviceServer.detectedDevices]
+    devicesList = [device.getBasicStatusDictionary() for device in app.config[CK_DEVICE_SERVER].detectedDevices]
     return render_template('dashboard.html', title='Home', user=user, devices=devicesList)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -42,7 +41,7 @@ def logout():
 @app.route('/devices/raw')
 def listdevices():
     #return json.dumps(deviceServer.detectedDevices)
-    return json.dumps(deviceServer.detectedDevices, cls=BasicDeviceEncoder)
+    return json.dumps(app.config[CK_DEVICE_SERVER].detectedDevices, cls=BasicDeviceEncoder)
 @app.route('/devices/<int:index>')
 def detaildevice(index):
     return "details about device " + index
