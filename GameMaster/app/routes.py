@@ -45,6 +45,24 @@ def listdevices():
 @app.route('/devices/<int:index>')
 def detaildevice(index):
     pass
+@app.route('/devices/<int:index>/play')
+def playroom(index):
+    pass
+@app.route('/devices/<int:index>/stop')
+def stoproom(index):
+    pass
+@app.route('/devices/<int:index>/pause')
+def pauseroom(index):
+    pass
+@app.route('/devices/<int:index>/reset')
+def resetroom(index):
+    pass
+@app.route('/devices/<int:index>/add')
+def addroomtime(index):
+    pass
+@app.route('/devices/<int:index>/set')
+def setroomtime(index):
+    pass
 @app.route('/js/<path:path>')
 def send_static_js(path):
     return send_from_directory('js', path)

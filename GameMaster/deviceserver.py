@@ -16,8 +16,13 @@ class Device():
         self.startedon = startedon
         self.alerts = Queue(maxsize=16)
         self.linkedToIP = linkedIP
+        self.lastStatus = None
         self.components  = components
     def getBasicStatusDictionary(self):
+        if(self.lastStatus is not None):
+            lastReceivedPacketDiff = self.lastStatus - datetime.datetime.now()
+        else:
+            lastReceivedPacketDiff = None
         return {
             'id' : self.id,
             'name' : self.name,
@@ -25,11 +30,14 @@ class Device():
             'gm' : self.linkedToIP,
             'timeleft' : self.timeleft,
             'state' : self.state,
+            'updatedago' : lastReceivedPacketDiff
             'alertcount' : self.alerts.qsize()
         }
     def appendAlert(self, alert):
         self.alerts.put(alert)
         return True
+    def updateStatus(self):
+        self.lastStatus = datetime.datetime.now()
 class BasicDeviceEncoder(json.JSONEncoder):
     def default(self, o):
             return o.getBasicStatusDictionary()    
@@ -77,7 +85,7 @@ class DevicesCommunicationServer():
     def runThreaded(self):
         threading.Thread(target=self.run).start()
     def sendCommand(self, device, command):
-        pass
+        response = requests.get(url = 'http://' + str(device.ip) + ':' + str(self._port) + '/status') 
     def tcpPollDevices(self):
         for device in self.detectedDevices:
             response = requests.get(url = 'http://' + str(device.ip) + ':' + str(self._port) + '/status') 
@@ -97,6 +105,7 @@ class DevicesCommunicationServer():
         for deviceIndex in range(len(self.detectedDevices)):
             if(self.detectedDevices[deviceIndex].id == device.id):
                 self.detectedDevices[deviceIndex] = device
+                device.updateStatus()
                 deviceKnown = True
                 break
         return deviceKnown
