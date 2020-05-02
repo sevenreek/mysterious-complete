@@ -85,7 +85,7 @@ class DevicesCommunicationServer():
     def runThreaded(self):
         threading.Thread(target=self.run).start()
     def sendCommand(self, device, command):
-        response = requests.get(url = 'http://' + str(device.ip) + ':' + str(self._port) + '/status') 
+        response = requests.get(url = 'http://' + str(device.ip) + ':' + str(self._port) + '/' + command) 
     def tcpPollDevices(self):
         for device in self.detectedDevices:
             response = requests.get(url = 'http://' + str(device.ip) + ':' + str(self._port) + '/status') 

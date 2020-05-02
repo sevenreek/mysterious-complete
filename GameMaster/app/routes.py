@@ -7,12 +7,13 @@ from werkzeug.urls import url_parse
 import json
 from unittest import mock
 from deviceserver import Device, BasicDeviceEncoder
-
+from run import CK_DEVICE_SERVER
+deviceServer = app.config[CK_DEVICE_SERVER]
 @app.route('/')
 @app.route('/index')
 def index():
     user = {'displayname' : 'Pracownik #01'}
-    devicesList = [device.getBasicStatusDictionary() for device in app.config['DEVICE_LIST']]
+    devicesList = [device.getBasicStatusDictionary() for device in deviceServer.detectedDevices]
     return render_template('dashboard.html', title='Home', user=user, devices=devicesList)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -41,28 +42,40 @@ def logout():
 @app.route('/devices/raw')
 def listdevices():
     #return json.dumps(deviceServer.detectedDevices)
-    return json.dumps(app.config['DEVICE_LIST'], cls=BasicDeviceEncoder)
+    return json.dumps(deviceServer.detectedDevices, cls=BasicDeviceEncoder)
 @app.route('/devices/<int:index>')
 def detaildevice(index):
-    pass
+    return "details about device " + index
 @app.route('/devices/<int:index>/play')
 def playroom(index):
-    pass
+    deviceServer.sendCommand('play')
 @app.route('/devices/<int:index>/stop')
 def stoproom(index):
-    pass
+    deviceServer.sendCommand('stop')
 @app.route('/devices/<int:index>/pause')
 def pauseroom(index):
-    pass
+    deviceServer.sendCommand('pause')
 @app.route('/devices/<int:index>/reset')
 def resetroom(index):
-    pass
+    try:
+        time = int(request.args.get('t'))
+        deviceServer.sendCommand('reset?t='+time)
+    except Exception as e:
+        print(e)
 @app.route('/devices/<int:index>/add')
 def addroomtime(index):
-    pass
+    try:
+        time = int(request.args.get('t'))
+        deviceServer.sendCommand('add?t='+time)
+    except Exception as e:
+        print(e)
 @app.route('/devices/<int:index>/set')
 def setroomtime(index):
-    pass
+    try:
+        time = int(request.args.get('t'))
+        deviceServer.sendCommand('set?t='+time)
+    except Exception as e:
+        print(e)
 @app.route('/js/<path:path>')
 def send_static_js(path):
     return send_from_directory('js', path)
