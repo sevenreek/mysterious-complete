@@ -13,8 +13,3 @@ class Config(object):
     DEVICESERVER_USE_TCP_UPDATE = False
     DEVICESERVER_UDP_BUFFER = 256
     DEVICE_MASK = 0xDE00
-
-
-class AlertConfig(object):
-    ERROR_HTTP_LINK_FAILED = (0, 'Linking of device raised errors.')
-    ERROR_HTTP_POLL_FAILED = (1, 'Raised errors on getting status.')

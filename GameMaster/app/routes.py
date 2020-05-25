@@ -6,7 +6,7 @@ from app.models import User
 from werkzeug.urls import url_parse
 import json
 from unittest import mock
-from deviceserver import Device, BasicDeviceEncoder
+from deviceserver import Room, RoomOverviewEncoder
 from run import CK_DEVICE_SERVER
 @app.route('/')
 @app.route('/index')
@@ -37,50 +37,31 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/room/raw')
+def list_rooms_raw():
+    return json.dumps(app.config[CK_DEVICE_SERVER].detectedDevices, cls=RoomOverviewEncoder)
 
-@app.route('/devices/raw')
-def listdevices():
-    #return json.dumps(deviceServer.detectedDevices)
-    return json.dumps(app.config[CK_DEVICE_SERVER].detectedDevices, cls=BasicDeviceEncoder)
-@app.route('/devices/<int:index>')
-def detaildevice(index):
+@app.route('/room/<int:index>/raw')
+def room_details_raw(index):
+    return "raw details about device " + index
+
+@app.route('/room/<int:index>')
+def room_details(index):
     return "details about device " + index
-@app.route('/devices/<int:index>/play')
-def playroom(index):
-    deviceServer.sendCommand('play')
-@app.route('/devices/<int:index>/stop')
-def stoproom(index):
-    deviceServer.sendCommand('stop')
-@app.route('/devices/<int:index>/pause')
-def pauseroom(index):
-    deviceServer.sendCommand('pause')
-@app.route('/devices/<int:index>/reset')
-def resetroom(index):
-    try:
-        time = int(request.args.get('t'))
-        deviceServer.sendCommand('reset?t='+time)
-    except Exception as e:
-        print(e)
-@app.route('/devices/<int:index>/add')
-def addroomtime(index):
-    try:
-        time = int(request.args.get('t'))
-        deviceServer.sendCommand('add?t='+time)
-    except Exception as e:
-        print(e)
-@app.route('/devices/<int:index>/set')
-def setroomtime(index):
-    try:
-        time = int(request.args.get('t'))
-        deviceServer.sendCommand('set?t='+time)
-    except Exception as e:
-        print(e)
+
+@app.route('/room/<int:index>/<path:command>')
+def pass_command_to_room(index, command):
+    deviceServer.sendCommand(index, command)
+    return ''
+
 @app.route('/js/<path:path>')
 def send_static_js(path):
     return send_from_directory('js', path)
+
 @app.route('/css/<path:path>')
 def send_static_css(path):
     return send_from_directory('css', path)
+
 @app.route('/vendor/<path:path>')
 def send_static_vendor(path):
     return send_from_directory('vendor', path)

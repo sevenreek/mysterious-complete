@@ -12,10 +12,6 @@ class BaseGameEvents(Enum):
     GPIO_PAUSE      = 0x0202
     GPIO_STOPRESET  = 0x0203
     GPIO_ADDTIME    = 0x0204
-class DebugGameEvents(Enum):
-    TEST0_SUBTEST0 = 0xF000
-    TEST0_SUBTEST1 = 0xF001
-    TEST1_SUBTEST0 = 0xF100
 class GameEvent():    
     def __init__(self, value, data=None):
         self.value = value

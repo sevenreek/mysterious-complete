@@ -1,4 +1,4 @@
-from RoomControllers import RoomIDs
+from RoomIDs import RoomIDs
 from RPi import GPIO
 class RoomConfig():
     # Feel free to edit these
@@ -6,7 +6,6 @@ class RoomConfig():
     DEFAULT_TIME = 3600 # in seconds
     ROOM_UNIQUE_ID = 0xDE00 | RoomIDs.DEBUGROOM.value # device ID has to have the format of 0xDE%%
     # Probably don't touch these
-    I2C_FREQUENCY = 100000
 class ServerConfig():
     ALLOW_SUDO = True # allows execution of arbitrary sudo command from http request; 
                       # extreme security risk if anyone from outside connects to the network;
@@ -17,7 +16,7 @@ class ServerConfig():
     LOGS_DATE_FORMAT = '%Y-%m-%d'
     LOGS_TIME_FORMAT = '[%H:%M:%S] '
     LOGS_DAYS_ARCHIVE_SIZE = 7
-    UDP_DETECT_BROADCAST_PORT = 4000
+    UPDATE_PORT = 4000
     HTTP_SERVER_PORT = 8080
     HTTP_SERVER_HOST = '0.0.0.0'
 class BaseGPIOConfig():
@@ -36,3 +35,4 @@ class BaseGPIOConfig():
     PIN_LAST_PUZZLE = 24
     DEBOUNCE_TIME = 200
     PULLUP_MODE = GPIO.PUD_UP
+    I2C_FREQUENCY = 100000

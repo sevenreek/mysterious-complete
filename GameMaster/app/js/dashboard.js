@@ -19,7 +19,7 @@ $( document ).ready(function() {
 });
 function updateDevices(){
   $.ajax({
-    url : '/devices/raw',
+    url : '/room/raw',
     cache : false,
     dataType : "json",
     crossDomain : false,
@@ -35,69 +35,35 @@ function updateDevices(){
 function sendCommandString(devindex, str)
 {
   $.ajax({
-    url : '/devices/'+devindex+'/cmd/'+str,
+    url : '/room/'+devindex+'/'+str,
     cache : false,
     dataType : "json",
     crossDomain : false
   });
-}
-function sendCommand(event)
-{
-  sendCommandString(event.data.device, event.data.command);
 }
 function playRoom(index)
 {
-  $.ajax({
-    url : '/devices/'+index+'/play',
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/play')
 }
 function pauseRoom(index)
 {
-  $.ajax({
-    url : '/devices/'+index+'/pause',
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/pause')
 }
 function stopRoom(index)
 {
-  $.ajax({
-    url : '/devices/'+index+'/stop',
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/stop')
 }
 function resetRoom(index, time)
 {
-  $.ajax({
-    url : '/devices/'+index+'/reset?t='+time,
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/reset/' + time)
 }
 function setRoomTime(index, time)
 {
-  $.ajax({
-    url : '/devices/'+index+'/set?t='+time,
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/set/' + time)
 }
 function addRoomTime(index, time)
 {
-  $.ajax({
-    url : '/devices/'+index+'/add?t='+time,
-    cache : false,
-    dataType : "json",
-    crossDomain : false
-  });
+  sendCommandString(index, 'timer/add/' + time)
 }
 function updateRoomViews(devicelist)
 {

@@ -1,21 +1,19 @@
 import time
-from BaseRoomController import BaseRoomController, GameEvent, BaseGameEvents
-#test
+from BaseRoomController import BaseRoomController
+from GameEvents import GameEvent, BaseGameEvents
+from TimerListeners import TickObserver
 
 class UpdateListener():
-    def onUpdate(self):
+    def update(self):
         raise NotImplementedError
-class TickListener():
-    def onTick(self, secLeft, countingDown):
-        raise NotImplementedError
+
 class UnthreadedTimer(UpdateListener):
-    def __init__(self, roomController : BaseRoomController):
+    def __init__(self):
         self.tickListeners = []
         self.secondsRemaining = 0
         self.countingDown = False
         self.lastTick = 0
-        self.roomctrl = roomController
-    def onUpdate(self):
+    def update(self):
         if(self.countingDown):
             tickVal = time.time()
             if( ( tickVal-self.lastTick ) >= 1 ):
@@ -38,11 +36,10 @@ class UnthreadedTimer(UpdateListener):
         return (self.secondsRemaining, self.countingDown)
     def addSeconds(self, value):
         self.setSeconds(self.secondsRemaining + value)
-    def appendTickListener(self, listener):
+    def appendTickListener(self, listener:TickObserver):
         self.tickListeners.append(listener)
     def onTick(self):
         for listener in self.tickListeners:
             listener.onTick(self.secondsRemaining, self.countingDown)
-        if(self.secondsRemaining == 0 and self.countingDown):
-            self.pause()
-            self.roomctrl.raiseEvent(GameEvent(BaseGameEvents.TIMER_HITZERO, None))
+
+

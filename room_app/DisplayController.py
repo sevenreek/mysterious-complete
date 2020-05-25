@@ -3,14 +3,12 @@ import board
 import busio
 from adafruit_ht16k33 import segments
 from TimerController import TickListener
-class IDisplayController(TickListener):
+class IDisplayController():
     def killDisplay(self):
         raise NotImplementedError
     def enableDisplay(self):
         raise NotImplementedError
     def setSeconds(self, seconds):
-        raise NotImplementedError
-    def onTick(self, seconds, countingDown):
         raise NotImplementedError
 class AF_HT16K33_7Seg(IDisplayController):
     MODE_MMSS = 0
@@ -44,8 +42,6 @@ class AF_HT16K33_7Seg(IDisplayController):
             print(e)
     def setDisplayMode(self, mode):
         self.mode = mode
-    def onTick(self, seconds, countingDown):
-        self.setSeconds(seconds)
 class CommandLineDisplay(IDisplayController):
     def killDisplay(self):
         pass
@@ -58,5 +54,3 @@ class CommandLineDisplay(IDisplayController):
         print('\r'+stringToDisplay,end='')
     def setDisplayMode(self, mode):
         pass
-    def onTick(self, seconds, countingDown):
-        self.setSeconds(seconds)
