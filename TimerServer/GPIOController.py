@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 from CONFIGURATION import CFG_DEFAULT_TIME
 from logger import Logger
 from time import sleep
+from functools import wraps
 CFG_TRIGGER_HOLD_TIME = 0.05 # seconds
 CFG_PIN_PLAY = 14
 CFG_PIN_PAUSE = 15
@@ -18,6 +19,21 @@ CFG_EXIT_OPEN_VALUE = 1
 CFG_ENTRANCE_OPEN_VALUE = 1
 CFG_PIN_LAST_PUZZLE = 24
 CFG_DEBOUNCE_TIME = 200
+CFG_FILTER_DELAY = 0.005
+CFG_INPUT_GOAL_LEVEL = 0
+def filtering_input_callback(pin_no, goal_level, delay):
+    def fnc(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            sleep(delay)
+            if(GPIO.input(pin_no)==goal_level):
+                function(*args, **kwargs)
+            else:
+                pass
+        return wrapper
+    return fnc
+
+
 class GPIOController():
     def __init__(self, roomctrl):
         self.roomctrl = roomctrl
@@ -59,18 +75,23 @@ class GPIOController():
     def lockExit(self):
         GPIO.output(CFG_PIN_EXIT_OPEN, not CFG_EXIT_OPEN_VALUE)
         Logger.glog("Locking exit.")
+    @filtering_input_callback(CFG_PIN_ADD_TIME, CFG_INPUT_GOAL_LEVEL, CFG_FILTER_DELAY)
     def onAddTimeBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_ADDTIME, CFG_ADD_TIME_VALUE))
         Logger.glog("GPIO time add triggered.")
+    @filtering_input_callback(CFG_PIN_PLAY, CFG_INPUT_GOAL_LEVEL, CFG_FILTER_DELAY)
     def onPlayBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_PLAY))
         Logger.glog("GPIO play triggered.")
+    @filtering_input_callback(CFG_PIN_STOP_AND_RESET, CFG_INPUT_GOAL_LEVEL, CFG_FILTER_DELAY)
     def onResetBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_STOPRESET, CFG_DEFAULT_TIME))
         Logger.glog("GPIO reset triggered.")
+    @filtering_input_callback(CFG_PIN_PAUSE, CFG_INPUT_GOAL_LEVEL, CFG_FILTER_DELAY)
     def onPauseBtn(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_PAUSE))
         Logger.glog("GPIO pause triggered.")
+    @filtering_input_callback(CFG_PIN_LAST_PUZZLE, CFG_INPUT_GOAL_LEVEL, CFG_FILTER_DELAY)
     def onLastPuzzle(self, channel):
         self.roomctrl.raiseEvent(RoomEvent(RoomEvent.EVT_GPIO_FINISHED))
         Logger.glog("GPIO last puzzle triggered.")
